@@ -1,0 +1,3847 @@
+
+AVRASM ver. 2.1.42  Z:\AVR PROJECTS\Clocks\Clocks.asm Wed Dec 14 04:53:50 2011
+
+Z:\AVR PROJECTS\Clocks\Clocks.asm(1): Including file 'C:\Program Files\Atmel\AVR Tools\AvrAssembler2\Appnotes\m32Adef.inc'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(4): Including file 'Z:\AVR PROJECTS\Clocks\definitions.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(50): Including file 'Z:\AVR PROJECTS\Clocks\macros.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(51): Including file 'Z:\AVR PROJECTS\Clocks\interrupts.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(52): Including file 'Z:\AVR PROJECTS\Clocks\input\input.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(53): Including file 'Z:\AVR PROJECTS\Clocks\input\events.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(54): Including file 'Z:\AVR PROJECTS\Clocks\output\output.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(55): Including file 'Z:\AVR PROJECTS\Clocks\output\brightness.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(56): Including file 'Z:\AVR PROJECTS\Clocks\common.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(57): Including file 'Z:\AVR PROJECTS\Clocks\time.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(61): Including file 'Z:\AVR PROJECTS\Clocks\init.asm'
+Z:\AVR PROJECTS\Clocks\Clocks.asm(96): Including file 'Z:\AVR PROJECTS\Clocks\eeprom.asm'
+                 
+                 
+                 
+                 ;***** Created: 2009-11-03 14:40 ******* Source: ATmega32A.xml ***********
+                 ;*************************************************************************
+                 ;* A P P L I C A T I O N   N O T E   F O R   T H E   A V R   F A M I L Y
+                 ;* 
+                 ;* Number            : AVR000
+                 ;* File Name         : "m32Adef.inc"
+                 ;* Title             : Register/Bit Definitions for the ATmega32A
+                 ;* Date              : 2009-11-03
+                 ;* Version           : 2.35
+                 ;* Support E-mail    : avr@atmel.com
+                 ;* Target MCU        : ATmega32A
+                 ;* 
+                 ;* DESCRIPTION
+                 ;* When including this file in the assembly program file, all I/O register 
+                 ;* names and I/O register bit names appearing in the data book can be used.
+                 ;* In addition, the six registers forming the three data pointers X, Y and 
+                 ;* Z have been assigned names XL - ZH. Highest RAM address for Internal 
+                 ;* SRAM is also defined 
+                 ;* 
+                 ;* The Register names are represented by their hexadecimal address.
+                 ;* 
+                 ;* The Register Bit names are represented by their bit number (0-7).
+                 ;* 
+                 ;* Please observe the difference in using the bit names with instructions
+                 ;* such as "sbr"/"cbr" (set/clear bit in register) and "sbrs"/"sbrc"
+                 ;* (skip if bit in register set/cleared). The following example illustrates
+                 ;* this:
+                 ;* 
+                 ;* in    r16,PORTB             ;read PORTB latch
+                 ;* sbr   r16,(1<<PB6)+(1<<PB5) ;set PB6 and PB5 (use masks, not bit#)
+                 ;* out   PORTB,r16             ;output to PORTB
+                 ;* 
+                 ;* in    r16,TIFR              ;read the Timer Interrupt Flag Register
+                 ;* sbrc  r16,TOV0              ;test the overflow flag (use bit#)
+                 ;* rjmp  TOV0_is_set           ;jump if set
+                 ;* ...                         ;otherwise do something else
+                 ;*************************************************************************
+                 
+                 #ifndef _M32ADEF_INC_
+                 #define _M32ADEF_INC_
+                 
+                 
+                 #pragma partinc 0
+                 
+                 ; ***** SPECIFY DEVICE ***************************************************
+                 .device ATmega32A
+                 #pragma AVRPART ADMIN PART_NAME ATmega32A
+                 .equ	SIGNATURE_000	= 0x1e
+                 .equ	SIGNATURE_001	= 0x95
+                 .equ	SIGNATURE_002	= 0x02
+                 
+                 #pragma AVRPART CORE CORE_VERSION V2E
+                 
+                 
+                 ; ***** I/O REGISTER DEFINITIONS *****************************************
+                 ; NOTE:
+                 ; Definitions marked "MEMORY MAPPED"are extended I/O ports
+                 ; and cannot be used with IN/OUT instructions
+                 .equ	SREG	= 0x3f
+                 .equ	SPL	= 0x3d
+                 .equ	SPH	= 0x3e
+                 .equ	OCR0	= 0x3c
+                 .equ	GICR	= 0x3b
+                 .equ	GIFR	= 0x3a
+                 .equ	TIMSK	= 0x39
+                 .equ	TIFR	= 0x38
+                 .equ	SPMCR	= 0x37
+                 .equ	TWCR	= 0x36
+                 .equ	MCUCR	= 0x35
+                 .equ	MCUCSR	= 0x34
+                 .equ	TCCR0	= 0x33
+                 .equ	TCNT0	= 0x32
+                 .equ	OSCCAL	= 0x31
+                 .equ	OCDR	= 0x31
+                 .equ	SFIOR	= 0x30
+                 .equ	TCCR1A	= 0x2f
+                 .equ	TCCR1B	= 0x2e
+                 .equ	TCNT1L	= 0x2c
+                 .equ	TCNT1H	= 0x2d
+                 .equ	OCR1AL	= 0x2a
+                 .equ	OCR1AH	= 0x2b
+                 .equ	OCR1BL	= 0x28
+                 .equ	OCR1BH	= 0x29
+                 .equ	ICR1L	= 0x26
+                 .equ	ICR1H	= 0x27
+                 .equ	TCCR2	= 0x25
+                 .equ	TCNT2	= 0x24
+                 .equ	OCR2	= 0x23
+                 .equ	ASSR	= 0x22
+                 .equ	WDTCR	= 0x21
+                 .equ	UBRRH	= 0x20
+                 .equ	UCSRC	= 0x20
+                 .equ	EEARL	= 0x1e
+                 .equ	EEARH	= 0x1f
+                 .equ	EEDR	= 0x1d
+                 .equ	EECR	= 0x1c
+                 .equ	PORTA	= 0x1b
+                 .equ	DDRA	= 0x1a
+                 .equ	PINA	= 0x19
+                 .equ	PORTB	= 0x18
+                 .equ	DDRB	= 0x17
+                 .equ	PINB	= 0x16
+                 .equ	PORTC	= 0x15
+                 .equ	DDRC	= 0x14
+                 .equ	PINC	= 0x13
+                 .equ	PORTD	= 0x12
+                 .equ	DDRD	= 0x11
+                 .equ	PIND	= 0x10
+                 .equ	SPDR	= 0x0f
+                 .equ	SPSR	= 0x0e
+                 .equ	SPCR	= 0x0d
+                 .equ	UDR	= 0x0c
+                 .equ	UCSRA	= 0x0b
+                 .equ	UCSRB	= 0x0a
+                 .equ	UBRRL	= 0x09
+                 .equ	ACSR	= 0x08
+                 .equ	ADMUX	= 0x07
+                 .equ	ADCSRA	= 0x06
+                 .equ	ADCH	= 0x05
+                 .equ	ADCL	= 0x04
+                 .equ	TWDR	= 0x03
+                 .equ	TWAR	= 0x02
+                 .equ	TWSR	= 0x01
+                 .equ	TWBR	= 0x00
+                 
+                 
+                 ; ***** BIT DEFINITIONS **************************************************
+                 
+                 ; ***** EEPROM ***********************
+                 ; EEDR - EEPROM Data Register
+                 .equ	EEDR0	= 0	; EEPROM Data Register bit 0
+                 .equ	EEDR1	= 1	; EEPROM Data Register bit 1
+                 .equ	EEDR2	= 2	; EEPROM Data Register bit 2
+                 .equ	EEDR3	= 3	; EEPROM Data Register bit 3
+                 .equ	EEDR4	= 4	; EEPROM Data Register bit 4
+                 .equ	EEDR5	= 5	; EEPROM Data Register bit 5
+                 .equ	EEDR6	= 6	; EEPROM Data Register bit 6
+                 .equ	EEDR7	= 7	; EEPROM Data Register bit 7
+                 
+                 ; EECR - EEPROM Control Register
+                 .equ	EERE	= 0	; EEPROM Read Enable
+                 .equ	EEWE	= 1	; EEPROM Write Enable
+                 .equ	EEMWE	= 2	; EEPROM Master Write Enable
+                 .equ	EERIE	= 3	; EEPROM Ready Interrupt Enable
+                 
+                 
+                 ; ***** WATCHDOG *********************
+                 ; WDTCR - Watchdog Timer Control Register
+                 .equ	WDP0	= 0	; Watch Dog Timer Prescaler bit 0
+                 .equ	WDP1	= 1	; Watch Dog Timer Prescaler bit 1
+                 .equ	WDP2	= 2	; Watch Dog Timer Prescaler bit 2
+                 .equ	WDE	= 3	; Watch Dog Enable
+                 .equ	WDTOE	= 4	; RW
+                 .equ	WDDE	= WDTOE	; For compatibility
+                 
+                 
+                 ; ***** EXTERNAL_INTERRUPT ***********
+                 ; GICR - General Interrupt Control Register
+                 .equ	GIMSK	= GICR	; For compatibility
+                 .equ	IVCE	= 0	; Interrupt Vector Change Enable
+                 .equ	IVSEL	= 1	; Interrupt Vector Select
+                 .equ	INT2	= 5	; External Interrupt Request 2 Enable
+                 .equ	INT0	= 6	; External Interrupt Request 0 Enable
+                 .equ	INT1	= 7	; External Interrupt Request 1 Enable
+                 
+                 ; GIFR - General Interrupt Flag Register
+                 .equ	INTF2	= 5	; External Interrupt Flag 2
+                 .equ	INTF0	= 6	; External Interrupt Flag 0
+                 .equ	INTF1	= 7	; External Interrupt Flag 1
+                 
+                 ; MCUCR - General Interrupt Control Register
+                 .equ	ISC00	= 0	; Interrupt Sense Control 0 Bit 0
+                 .equ	ISC01	= 1	; Interrupt Sense Control 0 Bit 1
+                 .equ	ISC10	= 2	; Interrupt Sense Control 1 Bit 0
+                 .equ	ISC11	= 3	; Interrupt Sense Control 1 Bit 1
+                 
+                 ; MCUCSR - MCU Control And Status Register
+                 .equ	ISC2	= 6	; Interrupt Sense Control 2
+                 
+                 
+                 ; ***** TIMER_COUNTER_0 **************
+                 ; TCCR0 - Timer/Counter Control Register
+                 .equ	CS00	= 0	; Clock Select 1
+                 .equ	CS01	= 1	; Clock Select 1
+                 .equ	CS02	= 2	; Clock Select 2
+                 .equ	WGM01	= 3	; Waveform Generation Mode 1
+                 .equ	CTC0	= WGM01	; For compatibility
+                 .equ	COM00	= 4	; Compare match Output Mode 0
+                 .equ	COM01	= 5	; Compare Match Output Mode 1
+                 .equ	WGM00	= 6	; Waveform Generation Mode
+                 .equ	PWM0	= WGM00	; For compatibility
+                 .equ	FOC0	= 7	; Force Output Compare
+                 
+                 ; TCNT0 - Timer/Counter Register
+                 .equ	TCNT0_0	= 0	; 
+                 .equ	TCNT0_1	= 1	; 
+                 .equ	TCNT0_2	= 2	; 
+                 .equ	TCNT0_3	= 3	; 
+                 .equ	TCNT0_4	= 4	; 
+                 .equ	TCNT0_5	= 5	; 
+                 .equ	TCNT0_6	= 6	; 
+                 .equ	TCNT0_7	= 7	; 
+                 
+                 ; OCR0 - Output Compare Register
+                 .equ	OCR0_0	= 0	; 
+                 .equ	OCR0_1	= 1	; 
+                 .equ	OCR0_2	= 2	; 
+                 .equ	OCR0_3	= 3	; 
+                 .equ	OCR0_4	= 4	; 
+                 .equ	OCR0_5	= 5	; 
+                 .equ	OCR0_6	= 6	; 
+                 .equ	OCR0_7	= 7	; 
+                 
+                 ; TIMSK - Timer/Counter Interrupt Mask Register
+                 .equ	TOIE0	= 0	; Timer/Counter0 Overflow Interrupt Enable
+                 .equ	OCIE0	= 1	; Timer/Counter0 Output Compare Match Interrupt register
+                 
+                 ; TIFR - Timer/Counter Interrupt Flag register
+                 .equ	TOV0	= 0	; Timer/Counter0 Overflow Flag
+                 .equ	OCF0	= 1	; Output Compare Flag 0
+                 
+                 
+                 ; ***** TIMER_COUNTER_2 **************
+                 ; TIMSK - Timer/Counter Interrupt Mask register
+                 .equ	TOIE2	= 6	; Timer/Counter2 Overflow Interrupt Enable
+                 .equ	OCIE2	= 7	; Timer/Counter2 Output Compare Match Interrupt Enable
+                 
+                 ; TIFR - Timer/Counter Interrupt Flag Register
+                 .equ	TOV2	= 6	; Timer/Counter2 Overflow Flag
+                 .equ	OCF2	= 7	; Output Compare Flag 2
+                 
+                 ; TCCR2 - Timer/Counter2 Control Register
+                 .equ	CS20	= 0	; Clock Select bit 0
+                 .equ	CS21	= 1	; Clock Select bit 1
+                 .equ	CS22	= 2	; Clock Select bit 2
+                 .equ	WGM21	= 3	; Clear Timer/Counter2 on Compare Match
+                 .equ	CTC2	= WGM21	; For compatibility
+                 .equ	COM20	= 4	; Compare Output Mode bit 0
+                 .equ	COM21	= 5	; Compare Output Mode bit 1
+                 .equ	WGM20	= 6	; Pulse Width Modulator Enable
+                 .equ	PWM2	= WGM20	; For compatibility
+                 .equ	FOC2	= 7	; Force Output Compare
+                 
+                 ; TCNT2 - Timer/Counter2
+                 .equ	TCNT2_0	= 0	; Timer/Counter 2 bit 0
+                 .equ	TCNT2_1	= 1	; Timer/Counter 2 bit 1
+                 .equ	TCNT2_2	= 2	; Timer/Counter 2 bit 2
+                 .equ	TCNT2_3	= 3	; Timer/Counter 2 bit 3
+                 .equ	TCNT2_4	= 4	; Timer/Counter 2 bit 4
+                 .equ	TCNT2_5	= 5	; Timer/Counter 2 bit 5
+                 .equ	TCNT2_6	= 6	; Timer/Counter 2 bit 6
+                 .equ	TCNT2_7	= 7	; Timer/Counter 2 bit 7
+                 
+                 ; OCR2 - Timer/Counter2 Output Compare Register
+                 .equ	OCR2_0	= 0	; Timer/Counter2 Output Compare Register Bit 0
+                 .equ	OCR2_1	= 1	; Timer/Counter2 Output Compare Register Bit 1
+                 .equ	OCR2_2	= 2	; Timer/Counter2 Output Compare Register Bit 2
+                 .equ	OCR2_3	= 3	; Timer/Counter2 Output Compare Register Bit 3
+                 .equ	OCR2_4	= 4	; Timer/Counter2 Output Compare Register Bit 4
+                 .equ	OCR2_5	= 5	; Timer/Counter2 Output Compare Register Bit 5
+                 .equ	OCR2_6	= 6	; Timer/Counter2 Output Compare Register Bit 6
+                 .equ	OCR2_7	= 7	; Timer/Counter2 Output Compare Register Bit 7
+                 
+                 ; ASSR - Asynchronous Status Register
+                 .equ	TCR2UB	= 0	; Timer/counter Control Register2 Update Busy
+                 .equ	OCR2UB	= 1	; Output Compare Register2 Update Busy
+                 .equ	TCN2UB	= 2	; Timer/Counter2 Update Busy
+                 .equ	AS2	= 3	; Asynchronous Timer/counter2
+                 
+                 
+                 ; ***** TIMER_COUNTER_1 **************
+                 ; TIMSK - Timer/Counter Interrupt Mask Register
+                 .equ	TOIE1	= 2	; Timer/Counter1 Overflow Interrupt Enable
+                 .equ	OCIE1B	= 3	; Timer/Counter1 Output CompareB Match Interrupt Enable
+                 .equ	OCIE1A	= 4	; Timer/Counter1 Output CompareA Match Interrupt Enable
+                 .equ	TICIE1	= 5	; Timer/Counter1 Input Capture Interrupt Enable
+                 
+                 ; TIFR - Timer/Counter Interrupt Flag register
+                 .equ	TOV1	= 2	; Timer/Counter1 Overflow Flag
+                 .equ	OCF1B	= 3	; Output Compare Flag 1B
+                 .equ	OCF1A	= 4	; Output Compare Flag 1A
+                 .equ	ICF1	= 5	; Input Capture Flag 1
+                 
+                 ; TCCR1A - Timer/Counter1 Control Register A
+                 .equ	WGM10	= 0	; Waveform Generation Mode
+                 .equ	PWM10	= WGM10	; For compatibility
+                 .equ	WGM11	= 1	; Waveform Generation Mode
+                 .equ	PWM11	= WGM11	; For compatibility
+                 .equ	FOC1B	= 2	; Force Output Compare 1B
+                 .equ	FOC1A	= 3	; Force Output Compare 1A
+                 .equ	COM1B0	= 4	; Compare Output Mode 1B, bit 0
+                 .equ	COM1B1	= 5	; Compare Output Mode 1B, bit 1
+                 .equ	COM1A0	= 6	; Compare Ouput Mode 1A, bit 0
+                 .equ	COM1A1	= 7	; Compare Output Mode 1A, bit 1
+                 
+                 ; TCCR1B - Timer/Counter1 Control Register B
+                 .equ	CS10	= 0	; Prescaler source of Timer/Counter 1
+                 .equ	CS11	= 1	; Prescaler source of Timer/Counter 1
+                 .equ	CS12	= 2	; Prescaler source of Timer/Counter 1
+                 .equ	WGM12	= 3	; Waveform Generation Mode
+                 .equ	CTC10	= WGM12	; For compatibility
+                 .equ	CTC1	= WGM12	; For compatibility
+                 .equ	WGM13	= 4	; Waveform Generation Mode
+                 .equ	CTC11	= WGM13	; For compatibility
+                 .equ	ICES1	= 6	; Input Capture 1 Edge Select
+                 .equ	ICNC1	= 7	; Input Capture 1 Noise Canceler
+                 
+                 
+                 ; ***** SPI **************************
+                 ; SPDR - SPI Data Register
+                 .equ	SPDR0	= 0	; SPI Data Register bit 0
+                 .equ	SPDR1	= 1	; SPI Data Register bit 1
+                 .equ	SPDR2	= 2	; SPI Data Register bit 2
+                 .equ	SPDR3	= 3	; SPI Data Register bit 3
+                 .equ	SPDR4	= 4	; SPI Data Register bit 4
+                 .equ	SPDR5	= 5	; SPI Data Register bit 5
+                 .equ	SPDR6	= 6	; SPI Data Register bit 6
+                 .equ	SPDR7	= 7	; SPI Data Register bit 7
+                 
+                 ; SPSR - SPI Status Register
+                 .equ	SPI2X	= 0	; Double SPI Speed Bit
+                 .equ	WCOL	= 6	; Write Collision Flag
+                 .equ	SPIF	= 7	; SPI Interrupt Flag
+                 
+                 ; SPCR - SPI Control Register
+                 .equ	SPR0	= 0	; SPI Clock Rate Select 0
+                 .equ	SPR1	= 1	; SPI Clock Rate Select 1
+                 .equ	CPHA	= 2	; Clock Phase
+                 .equ	CPOL	= 3	; Clock polarity
+                 .equ	MSTR	= 4	; Master/Slave Select
+                 .equ	DORD	= 5	; Data Order
+                 .equ	SPE	= 6	; SPI Enable
+                 .equ	SPIE	= 7	; SPI Interrupt Enable
+                 
+                 
+                 ; ***** USART ************************
+                 ; UDR - USART I/O Data Register
+                 .equ	UDR0	= 0	; USART I/O Data Register bit 0
+                 .equ	UDR1	= 1	; USART I/O Data Register bit 1
+                 .equ	UDR2	= 2	; USART I/O Data Register bit 2
+                 .equ	UDR3	= 3	; USART I/O Data Register bit 3
+                 .equ	UDR4	= 4	; USART I/O Data Register bit 4
+                 .equ	UDR5	= 5	; USART I/O Data Register bit 5
+                 .equ	UDR6	= 6	; USART I/O Data Register bit 6
+                 .equ	UDR7	= 7	; USART I/O Data Register bit 7
+                 
+                 ; UCSRA - USART Control and Status Register A
+                 .equ	USR	= UCSRA	; For compatibility
+                 .equ	MPCM	= 0	; Multi-processor Communication Mode
+                 .equ	U2X	= 1	; Double the USART transmission speed
+                 .equ	UPE	= 2	; Parity Error
+                 .equ	PE	= UPE	; For compatibility
+                 .equ	DOR	= 3	; Data overRun
+                 .equ	FE	= 4	; Framing Error
+                 .equ	UDRE	= 5	; USART Data Register Empty
+                 .equ	TXC	= 6	; USART Transmitt Complete
+                 .equ	RXC	= 7	; USART Receive Complete
+                 
+                 ; UCSRB - USART Control and Status Register B
+                 .equ	UCR	= UCSRB	; For compatibility
+                 .equ	TXB8	= 0	; Transmit Data Bit 8
+                 .equ	RXB8	= 1	; Receive Data Bit 8
+                 .equ	UCSZ2	= 2	; Character Size
+                 .equ	CHR9	= UCSZ2	; For compatibility
+                 .equ	TXEN	= 3	; Transmitter Enable
+                 .equ	RXEN	= 4	; Receiver Enable
+                 .equ	UDRIE	= 5	; USART Data register Empty Interrupt Enable
+                 .equ	TXCIE	= 6	; TX Complete Interrupt Enable
+                 .equ	RXCIE	= 7	; RX Complete Interrupt Enable
+                 
+                 ; UCSRC - USART Control and Status Register C
+                 .equ	UCPOL	= 0	; Clock Polarity
+                 .equ	UCSZ0	= 1	; Character Size
+                 .equ	UCSZ1	= 2	; Character Size
+                 .equ	USBS	= 3	; Stop Bit Select
+                 .equ	UPM0	= 4	; Parity Mode Bit 0
+                 .equ	UPM1	= 5	; Parity Mode Bit 1
+                 .equ	UMSEL	= 6	; USART Mode Select
+                 .equ	URSEL	= 7	; Register Select
+                 
+                 .equ	UBRRHI	= UBRRH	; For compatibility
+                 
+                 ; ***** ANALOG_COMPARATOR ************
+                 ; SFIOR - Special Function IO Register
+                 .equ	ACME	= 3	; Analog Comparator Multiplexer Enable
+                 
+                 ; ACSR - Analog Comparator Control And Status Register
+                 .equ	ACIS0	= 0	; Analog Comparator Interrupt Mode Select bit 0
+                 .equ	ACIS1	= 1	; Analog Comparator Interrupt Mode Select bit 1
+                 .equ	ACIC	= 2	; Analog Comparator Input Capture Enable
+                 .equ	ACIE	= 3	; Analog Comparator Interrupt Enable
+                 .equ	ACI	= 4	; Analog Comparator Interrupt Flag
+                 .equ	ACO	= 5	; Analog Compare Output
+                 .equ	ACBG	= 6	; Analog Comparator Bandgap Select
+                 .equ	ACD	= 7	; Analog Comparator Disable
+                 
+                 
+                 ; ***** AD_CONVERTER *****************
+                 ; ADMUX - The ADC multiplexer Selection Register
+                 .equ	MUX0	= 0	; Analog Channel and Gain Selection Bits
+                 .equ	MUX1	= 1	; Analog Channel and Gain Selection Bits
+                 .equ	MUX2	= 2	; Analog Channel and Gain Selection Bits
+                 .equ	MUX3	= 3	; Analog Channel and Gain Selection Bits
+                 .equ	MUX4	= 4	; Analog Channel and Gain Selection Bits
+                 .equ	ADLAR	= 5	; Left Adjust Result
+                 .equ	REFS0	= 6	; Reference Selection Bit 0
+                 .equ	REFS1	= 7	; Reference Selection Bit 1
+                 
+                 ; ADCSRA - The ADC Control and Status register
+                 .equ	ADCSR	= ADCSRA	; For compatibility
+                 .equ	ADPS0	= 0	; ADC  Prescaler Select Bits
+                 .equ	ADPS1	= 1	; ADC  Prescaler Select Bits
+                 .equ	ADPS2	= 2	; ADC  Prescaler Select Bits
+                 .equ	ADIE	= 3	; ADC Interrupt Enable
+                 .equ	ADIF	= 4	; ADC Interrupt Flag
+                 .equ	ADATE	= 5	; When this bit is written to one,the Timer/Counter2 prescaler will be reset.The bit will be cleared by hardware after the operation is performed.Writing a zero to this bit will have no effect.This bit will always be read as zero if Timer/C                 ounter2 is clocked by the internal CPU clock.If this bit is written when Timer/Counter2 is operating in asynchronous mode,the bit will remain one until the prescaler has been reset.
+                 .equ	ADFR	= ADATE	; For compatibility
+                 .equ	ADSC	= 6	; ADC Start Conversion
+                 .equ	ADEN	= 7	; ADC Enable
+                 
+                 ; ADCH - ADC Data Register High Byte
+                 .equ	ADCH0	= 0	; ADC Data Register High Byte Bit 0
+                 .equ	ADCH1	= 1	; ADC Data Register High Byte Bit 1
+                 .equ	ADCH2	= 2	; ADC Data Register High Byte Bit 2
+                 .equ	ADCH3	= 3	; ADC Data Register High Byte Bit 3
+                 .equ	ADCH4	= 4	; ADC Data Register High Byte Bit 4
+                 .equ	ADCH5	= 5	; ADC Data Register High Byte Bit 5
+                 .equ	ADCH6	= 6	; ADC Data Register High Byte Bit 6
+                 .equ	ADCH7	= 7	; ADC Data Register High Byte Bit 7
+                 
+                 ; ADCL - ADC Data Register Low Byte
+                 .equ	ADCL0	= 0	; ADC Data Register Low Byte Bit 0
+                 .equ	ADCL1	= 1	; ADC Data Register Low Byte Bit 1
+                 .equ	ADCL2	= 2	; ADC Data Register Low Byte Bit 2
+                 .equ	ADCL3	= 3	; ADC Data Register Low Byte Bit 3
+                 .equ	ADCL4	= 4	; ADC Data Register Low Byte Bit 4
+                 .equ	ADCL5	= 5	; ADC Data Register Low Byte Bit 5
+                 .equ	ADCL6	= 6	; ADC Data Register Low Byte Bit 6
+                 .equ	ADCL7	= 7	; ADC Data Register Low Byte Bit 7
+                 
+                 ; SFIOR - Special Function IO Register
+                 .equ	ADTS0	= 5	; ADC Auto Trigger Source 0
+                 .equ	ADTS1	= 6	; ADC Auto Trigger Source 1
+                 .equ	ADTS2	= 7	; ADC Auto Trigger Source 2
+                 
+                 
+                 ; ***** PORTA ************************
+                 ; PORTA - Port A Data Register
+                 .equ	PORTA0	= 0	; Port A Data Register bit 0
+                 .equ	PA0	= 0	; For compatibility
+                 .equ	PORTA1	= 1	; Port A Data Register bit 1
+                 .equ	PA1	= 1	; For compatibility
+                 .equ	PORTA2	= 2	; Port A Data Register bit 2
+                 .equ	PA2	= 2	; For compatibility
+                 .equ	PORTA3	= 3	; Port A Data Register bit 3
+                 .equ	PA3	= 3	; For compatibility
+                 .equ	PORTA4	= 4	; Port A Data Register bit 4
+                 .equ	PA4	= 4	; For compatibility
+                 .equ	PORTA5	= 5	; Port A Data Register bit 5
+                 .equ	PA5	= 5	; For compatibility
+                 .equ	PORTA6	= 6	; Port A Data Register bit 6
+                 .equ	PA6	= 6	; For compatibility
+                 .equ	PORTA7	= 7	; Port A Data Register bit 7
+                 .equ	PA7	= 7	; For compatibility
+                 
+                 ; DDRA - Port A Data Direction Register
+                 .equ	DDA0	= 0	; Data Direction Register, Port A, bit 0
+                 .equ	DDA1	= 1	; Data Direction Register, Port A, bit 1
+                 .equ	DDA2	= 2	; Data Direction Register, Port A, bit 2
+                 .equ	DDA3	= 3	; Data Direction Register, Port A, bit 3
+                 .equ	DDA4	= 4	; Data Direction Register, Port A, bit 4
+                 .equ	DDA5	= 5	; Data Direction Register, Port A, bit 5
+                 .equ	DDA6	= 6	; Data Direction Register, Port A, bit 6
+                 .equ	DDA7	= 7	; Data Direction Register, Port A, bit 7
+                 
+                 ; PINA - Port A Input Pins
+                 .equ	PINA0	= 0	; Input Pins, Port A bit 0
+                 .equ	PINA1	= 1	; Input Pins, Port A bit 1
+                 .equ	PINA2	= 2	; Input Pins, Port A bit 2
+                 .equ	PINA3	= 3	; Input Pins, Port A bit 3
+                 .equ	PINA4	= 4	; Input Pins, Port A bit 4
+                 .equ	PINA5	= 5	; Input Pins, Port A bit 5
+                 .equ	PINA6	= 6	; Input Pins, Port A bit 6
+                 .equ	PINA7	= 7	; Input Pins, Port A bit 7
+                 
+                 
+                 ; ***** PORTB ************************
+                 ; PORTB - Port B Data Register
+                 .equ	PORTB0	= 0	; Port B Data Register bit 0
+                 .equ	PB0	= 0	; For compatibility
+                 .equ	PORTB1	= 1	; Port B Data Register bit 1
+                 .equ	PB1	= 1	; For compatibility
+                 .equ	PORTB2	= 2	; Port B Data Register bit 2
+                 .equ	PB2	= 2	; For compatibility
+                 .equ	PORTB3	= 3	; Port B Data Register bit 3
+                 .equ	PB3	= 3	; For compatibility
+                 .equ	PORTB4	= 4	; Port B Data Register bit 4
+                 .equ	PB4	= 4	; For compatibility
+                 .equ	PORTB5	= 5	; Port B Data Register bit 5
+                 .equ	PB5	= 5	; For compatibility
+                 .equ	PORTB6	= 6	; Port B Data Register bit 6
+                 .equ	PB6	= 6	; For compatibility
+                 .equ	PORTB7	= 7	; Port B Data Register bit 7
+                 .equ	PB7	= 7	; For compatibility
+                 
+                 ; DDRB - Port B Data Direction Register
+                 .equ	DDB0	= 0	; Port B Data Direction Register bit 0
+                 .equ	DDB1	= 1	; Port B Data Direction Register bit 1
+                 .equ	DDB2	= 2	; Port B Data Direction Register bit 2
+                 .equ	DDB3	= 3	; Port B Data Direction Register bit 3
+                 .equ	DDB4	= 4	; Port B Data Direction Register bit 4
+                 .equ	DDB5	= 5	; Port B Data Direction Register bit 5
+                 .equ	DDB6	= 6	; Port B Data Direction Register bit 6
+                 .equ	DDB7	= 7	; Port B Data Direction Register bit 7
+                 
+                 ; PINB - Port B Input Pins
+                 .equ	PINB0	= 0	; Port B Input Pins bit 0
+                 .equ	PINB1	= 1	; Port B Input Pins bit 1
+                 .equ	PINB2	= 2	; Port B Input Pins bit 2
+                 .equ	PINB3	= 3	; Port B Input Pins bit 3
+                 .equ	PINB4	= 4	; Port B Input Pins bit 4
+                 .equ	PINB5	= 5	; Port B Input Pins bit 5
+                 .equ	PINB6	= 6	; Port B Input Pins bit 6
+                 .equ	PINB7	= 7	; Port B Input Pins bit 7
+                 
+                 
+                 ; ***** PORTC ************************
+                 ; PORTC - Port C Data Register
+                 .equ	PORTC0	= 0	; Port C Data Register bit 0
+                 .equ	PC0	= 0	; For compatibility
+                 .equ	PORTC1	= 1	; Port C Data Register bit 1
+                 .equ	PC1	= 1	; For compatibility
+                 .equ	PORTC2	= 2	; Port C Data Register bit 2
+                 .equ	PC2	= 2	; For compatibility
+                 .equ	PORTC3	= 3	; Port C Data Register bit 3
+                 .equ	PC3	= 3	; For compatibility
+                 .equ	PORTC4	= 4	; Port C Data Register bit 4
+                 .equ	PC4	= 4	; For compatibility
+                 .equ	PORTC5	= 5	; Port C Data Register bit 5
+                 .equ	PC5	= 5	; For compatibility
+                 .equ	PORTC6	= 6	; Port C Data Register bit 6
+                 .equ	PC6	= 6	; For compatibility
+                 .equ	PORTC7	= 7	; Port C Data Register bit 7
+                 .equ	PC7	= 7	; For compatibility
+                 
+                 ; DDRC - Port C Data Direction Register
+                 .equ	DDC0	= 0	; Port C Data Direction Register bit 0
+                 .equ	DDC1	= 1	; Port C Data Direction Register bit 1
+                 .equ	DDC2	= 2	; Port C Data Direction Register bit 2
+                 .equ	DDC3	= 3	; Port C Data Direction Register bit 3
+                 .equ	DDC4	= 4	; Port C Data Direction Register bit 4
+                 .equ	DDC5	= 5	; Port C Data Direction Register bit 5
+                 .equ	DDC6	= 6	; Port C Data Direction Register bit 6
+                 .equ	DDC7	= 7	; Port C Data Direction Register bit 7
+                 
+                 ; PINC - Port C Input Pins
+                 .equ	PINC0	= 0	; Port C Input Pins bit 0
+                 .equ	PINC1	= 1	; Port C Input Pins bit 1
+                 .equ	PINC2	= 2	; Port C Input Pins bit 2
+                 .equ	PINC3	= 3	; Port C Input Pins bit 3
+                 .equ	PINC4	= 4	; Port C Input Pins bit 4
+                 .equ	PINC5	= 5	; Port C Input Pins bit 5
+                 .equ	PINC6	= 6	; Port C Input Pins bit 6
+                 .equ	PINC7	= 7	; Port C Input Pins bit 7
+                 
+                 
+                 ; ***** PORTD ************************
+                 ; PORTD - Port D Data Register
+                 .equ	PORTD0	= 0	; Port D Data Register bit 0
+                 .equ	PD0	= 0	; For compatibility
+                 .equ	PORTD1	= 1	; Port D Data Register bit 1
+                 .equ	PD1	= 1	; For compatibility
+                 .equ	PORTD2	= 2	; Port D Data Register bit 2
+                 .equ	PD2	= 2	; For compatibility
+                 .equ	PORTD3	= 3	; Port D Data Register bit 3
+                 .equ	PD3	= 3	; For compatibility
+                 .equ	PORTD4	= 4	; Port D Data Register bit 4
+                 .equ	PD4	= 4	; For compatibility
+                 .equ	PORTD5	= 5	; Port D Data Register bit 5
+                 .equ	PD5	= 5	; For compatibility
+                 .equ	PORTD6	= 6	; Port D Data Register bit 6
+                 .equ	PD6	= 6	; For compatibility
+                 .equ	PORTD7	= 7	; Port D Data Register bit 7
+                 .equ	PD7	= 7	; For compatibility
+                 
+                 ; DDRD - Port D Data Direction Register
+                 .equ	DDD0	= 0	; Port D Data Direction Register bit 0
+                 .equ	DDD1	= 1	; Port D Data Direction Register bit 1
+                 .equ	DDD2	= 2	; Port D Data Direction Register bit 2
+                 .equ	DDD3	= 3	; Port D Data Direction Register bit 3
+                 .equ	DDD4	= 4	; Port D Data Direction Register bit 4
+                 .equ	DDD5	= 5	; Port D Data Direction Register bit 5
+                 .equ	DDD6	= 6	; Port D Data Direction Register bit 6
+                 .equ	DDD7	= 7	; Port D Data Direction Register bit 7
+                 
+                 ; PIND - Port D Input Pins
+                 .equ	PIND0	= 0	; Port D Input Pins bit 0
+                 .equ	PIND1	= 1	; Port D Input Pins bit 1
+                 .equ	PIND2	= 2	; Port D Input Pins bit 2
+                 .equ	PIND3	= 3	; Port D Input Pins bit 3
+                 .equ	PIND4	= 4	; Port D Input Pins bit 4
+                 .equ	PIND5	= 5	; Port D Input Pins bit 5
+                 .equ	PIND6	= 6	; Port D Input Pins bit 6
+                 .equ	PIND7	= 7	; Port D Input Pins bit 7
+                 
+                 
+                 ; ***** CPU **************************
+                 ; SREG - Status Register
+                 .equ	SREG_C	= 0	; Carry Flag
+                 .equ	SREG_Z	= 1	; Zero Flag
+                 .equ	SREG_N	= 2	; Negative Flag
+                 .equ	SREG_V	= 3	; Two's Complement Overflow Flag
+                 .equ	SREG_S	= 4	; Sign Bit
+                 .equ	SREG_H	= 5	; Half Carry Flag
+                 .equ	SREG_T	= 6	; Bit Copy Storage
+                 .equ	SREG_I	= 7	; Global Interrupt Enable
+                 
+                 ; MCUCR - MCU Control Register
+                 ;.equ	ISC00	= 0	; Interrupt Sense Control 0 Bit 0
+                 ;.equ	ISC01	= 1	; Interrupt Sense Control 0 Bit 1
+                 ;.equ	ISC10	= 2	; Interrupt Sense Control 1 Bit 0
+                 ;.equ	ISC11	= 3	; Interrupt Sense Control 1 Bit 1
+                 .equ	SM0	= 4	; Sleep Mode Select
+                 .equ	SM1	= 5	; Sleep Mode Select
+                 .equ	SM2	= 6	; Sleep Mode Select
+                 .equ	SE	= 7	; Sleep Enable
+                 
+                 ; MCUCSR - MCU Control And Status Register
+                 .equ	MCUSR	= MCUCSR	; For compatibility
+                 .equ	PORF	= 0	; Power-on reset flag
+                 .equ	EXTRF	= 1	; External Reset Flag
+                 .equ	BORF	= 2	; Brown-out Reset Flag
+                 .equ	WDRF	= 3	; Watchdog Reset Flag
+                 .equ	JTRF	= 4	; JTAG Reset Flag
+                 .equ	JTD	= 7	; JTAG Interface Disable
+                 
+                 ; OSCCAL - Oscillator Calibration Value
+                 .equ	CAL0	= 0	; Oscillator Calibration Value Bit0
+                 .equ	CAL1	= 1	; Oscillator Calibration Value Bit1
+                 .equ	CAL2	= 2	; Oscillator Calibration Value Bit2
+                 .equ	CAL3	= 3	; Oscillator Calibration Value Bit3
+                 .equ	CAL4	= 4	; Oscillator Calibration Value Bit4
+                 .equ	CAL5	= 5	; Oscillator Calibration Value Bit5
+                 .equ	CAL6	= 6	; Oscillator Calibration Value Bit6
+                 .equ	CAL7	= 7	; Oscillator Calibration Value Bit7
+                 
+                 ; SFIOR - Special Function IO Register
+                 .equ	PSR10	= 0	; Prescaler Reset Timer/Counter1&0
+                 .equ	PSR2	= 1	; Prescaler Reset Timer/Counter2
+                 .equ	PUD	= 2	; Pull-up Disable
+                 
+                 
+                 ; ***** BOOT_LOAD ********************
+                 ; SPMCR - Store Program Memory Control Register
+                 .equ	SPMEN	= 0	; Store Program Memory Enable
+                 .equ	PGERS	= 1	; Page Erase
+                 .equ	PGWRT	= 2	; Page Write
+                 .equ	BLBSET	= 3	; Boot Lock Bit Set
+                 .equ	RWWSRE	= 4	; Read While Write secion read enable
+                 .equ	ASRE	= RWWSRE	; For compatibility
+                 .equ	RWWSB	= 6	; Read While Write Section Busy
+                 .equ	ASB	= RWWSB	; For compatibility
+                 .equ	SPMIE	= 7	; SPM Interrupt Enable
+                 
+                 
+                 ; ***** TWI **************************
+                 ; TWBR - TWI Bit Rate register
+                 .equ	TWBR0	= 0	; 
+                 .equ	TWBR1	= 1	; 
+                 .equ	TWBR2	= 2	; 
+                 .equ	TWBR3	= 3	; 
+                 .equ	TWBR4	= 4	; 
+                 .equ	TWBR5	= 5	; 
+                 .equ	TWBR6	= 6	; 
+                 .equ	TWBR7	= 7	; 
+                 
+                 ; TWCR - TWI Control Register
+                 .equ	TWIE	= 0	; TWI Interrupt Enable
+                 .equ	TWEN	= 2	; TWI Enable Bit
+                 .equ	TWWC	= 3	; TWI Write Collition Flag
+                 .equ	TWSTO	= 4	; TWI Stop Condition Bit
+                 .equ	TWSTA	= 5	; TWI Start Condition Bit
+                 .equ	TWEA	= 6	; TWI Enable Acknowledge Bit
+                 .equ	TWINT	= 7	; TWI Interrupt Flag
+                 
+                 ; TWSR - TWI Status Register
+                 .equ	TWPS0	= 0	; TWI Prescaler bits
+                 .equ	TWPS1	= 1	; TWI Prescaler bits
+                 .equ	TWS3	= 3	; TWI Status
+                 .equ	TWS4	= 4	; TWI Status
+                 .equ	TWS5	= 5	; TWI Status
+                 .equ	TWS6	= 6	; TWI Status
+                 .equ	TWS7	= 7	; TWI Status
+                 
+                 ; TWDR - TWI Data register
+                 .equ	TWD0	= 0	; TWI Data Register Bit 0
+                 .equ	TWD1	= 1	; TWI Data Register Bit 1
+                 .equ	TWD2	= 2	; TWI Data Register Bit 2
+                 .equ	TWD3	= 3	; TWI Data Register Bit 3
+                 .equ	TWD4	= 4	; TWI Data Register Bit 4
+                 .equ	TWD5	= 5	; TWI Data Register Bit 5
+                 .equ	TWD6	= 6	; TWI Data Register Bit 6
+                 .equ	TWD7	= 7	; TWI Data Register Bit 7
+                 
+                 ; TWAR - TWI (Slave) Address register
+                 .equ	TWGCE	= 0	; TWI General Call Recognition Enable Bit
+                 .equ	TWA0	= 1	; TWI (Slave) Address register Bit 0
+                 .equ	TWA1	= 2	; TWI (Slave) Address register Bit 1
+                 .equ	TWA2	= 3	; TWI (Slave) Address register Bit 2
+                 .equ	TWA3	= 4	; TWI (Slave) Address register Bit 3
+                 .equ	TWA4	= 5	; TWI (Slave) Address register Bit 4
+                 .equ	TWA5	= 6	; TWI (Slave) Address register Bit 5
+                 .equ	TWA6	= 7	; TWI (Slave) Address register Bit 6
+                 
+                 
+                 
+                 ; ***** LOCKSBITS ********************************************************
+                 .equ	LB1	= 0	; Lock bit
+                 .equ	LB2	= 1	; Lock bit
+                 .equ	BLB01	= 2	; Boot Lock bit
+                 .equ	BLB02	= 3	; Boot Lock bit
+                 .equ	BLB11	= 4	; Boot lock bit
+                 .equ	BLB12	= 5	; Boot lock bit
+                 
+                 
+                 ; ***** FUSES ************************************************************
+                 ; LOW fuse bits
+                 .equ	CKSEL0	= 0	; Select Clock Source
+                 .equ	CKSEL1	= 1	; Select Clock Source
+                 .equ	CKSEL2	= 2	; Select Clock Source
+                 .equ	CKSEL3	= 3	; Select Clock Source
+                 .equ	BODEN	= 6	; Brown out detector enable
+                 .equ	BODLEVEL	= 7	; Brown out detector trigger level
+                 
+                 ; HIGH fuse bits
+                 .equ	BOOTRST	= 0	; Select Reset Vector
+                 .equ	BOOTSZ0	= 1	; Select Boot Size
+                 .equ	BOOTSZ1	= 2	; Select Boot Size
+                 .equ	EESAVE	= 3	; EEPROM memory is preserved through chip erase
+                 .equ	SPIEN	= 5	; Enable Serial programming and Data Downloading
+                 .equ	JTAGEN	= 6	; Enable JTAG
+                 .equ	OCDEN	= 7	; Enable OCD
+                 
+                 
+                 
+                 ; ***** CPU REGISTER DEFINITIONS *****************************************
+                 .def	XH	= r27
+                 .def	XL	= r26
+                 .def	YH	= r29
+                 .def	YL	= r28
+                 .def	ZH	= r31
+                 .def	ZL	= r30
+                 
+                 
+                 
+                 ; ***** DATA MEMORY DECLARATIONS *****************************************
+                 .equ	FLASHEND	= 0x3fff	; Note: Word address
+                 .equ	IOEND	= 0x003f
+                 .equ	SRAM_START	= 0x0060
+                 .equ	SRAM_SIZE	= 2048
+                 .equ	RAMEND	= 0x085f
+                 .equ	XRAMEND	= 0x0000
+                 .equ	E2END	= 0x03ff
+                 .equ	EEPROMEND	= 0x03ff
+                 .equ	EEADRBITS	= 10
+                 #pragma AVRPART MEMORY PROG_FLASH 32768
+                 #pragma AVRPART MEMORY EEPROM 1024
+                 #pragma AVRPART MEMORY INT_SRAM SIZE 2048
+                 #pragma AVRPART MEMORY INT_SRAM START_ADDR 0x60
+                 
+                 
+                 
+                 ; ***** BOOTLOADER DECLARATIONS ******************************************
+                 .equ	NRWW_START_ADDR	= 0x3800
+                 .equ	NRWW_STOP_ADDR	= 0x3fff
+                 .equ	RWW_START_ADDR	= 0x0
+                 .equ	RWW_STOP_ADDR	= 0x37ff
+                 .equ	PAGESIZE	= 64
+                 .equ	FIRSTBOOTSTART	= 0x3f00
+                 .equ	SECONDBOOTSTART	= 0x3e00
+                 .equ	THIRDBOOTSTART	= 0x3c00
+                 .equ	FOURTHBOOTSTART	= 0x3800
+                 .equ	SMALLBOOTSTART	= FIRSTBOOTSTART
+                 .equ	LARGEBOOTSTART	= FOURTHBOOTSTART
+                 
+                 
+                 
+                 ; ***** INTERRUPT VECTORS ************************************************
+                 .equ	INT0addr	= 0x0002	; External Interrupt Request 0
+                 .equ	INT1addr	= 0x0004	; External Interrupt Request 1
+                 .equ	INT2addr	= 0x0006	; External Interrupt Request 2
+                 .equ	OC2addr	= 0x0008	; Timer/Counter2 Compare Match
+                 .equ	OVF2addr	= 0x000a	; Timer/Counter2 Overflow
+                 .equ	ICP1addr	= 0x000c	; Timer/Counter1 Capture Event
+                 .equ	OC1Aaddr	= 0x000e	; Timer/Counter1 Compare Match A
+                 .equ	OC1Baddr	= 0x0010	; Timer/Counter1 Compare Match B
+                 .equ	OVF1addr	= 0x0012	; Timer/Counter1 Overflow
+                 .equ	OC0addr	= 0x0014	; Timer/Counter0 Compare Match
+                 .equ	OVF0addr	= 0x0016	; Timer/Counter0 Overflow
+                 .equ	SPIaddr	= 0x0018	; Serial Transfer Complete
+                 .equ	URXCaddr	= 0x001a	; USART, Rx Complete
+                 .equ	UDREaddr	= 0x001c	; USART Data Register Empty
+                 .equ	UTXCaddr	= 0x001e	; USART, Tx Complete
+                 .equ	ADCCaddr	= 0x0020	; ADC Conversion Complete
+                 .equ	ERDYaddr	= 0x0022	; EEPROM Ready
+                 .equ	ACIaddr	= 0x0024	; Analog Comparator
+                 .equ	TWIaddr	= 0x0026	; 2-wire Serial Interface
+                 .equ	SPMRaddr	= 0x0028	; Store Program Memory Ready
+                 
+                 .equ	INT_VECTORS_SIZE	= 42	; size in words
+                 
+                 #endif  /* _M32ADEF_INC_ */
+                 
+                 
+                 .dseg
+                 .include "definitions.asm"
+                 
+                 	
+                 	;----------Time variables-----------
+                 	;Do not change order of time variables definition
+000060           	mSecond: .BYTE 1 ;Changes from 0 to 59
+000061           	mHour: .BYTE 1 ;Changes from 0 to 23
+000062           	mMinute: .BYTE 1 ;Changes from 0 to 59
+000063           	mDay: .BYTE 1 ;Changes from 1 to 31 (or 30, 29, 28 depending on month)
+000064           	mMonth: .BYTE 1 ;Changes from 1 to 12
+000065           	mDayOfWeek: .BYTE 1 ;Changes from 1 to 7
+                 	
+                 
+                 	;----------Alarms variables-----------
+000066           	mAlarms: .BYTE 4 ;High 2 bytes are the first alarm, low 2 bytes - second alarm
+                 					 ;First byte is hours, second byte is minutes
+00006a           	mCurrentAlarm: .BYTE 1 
+                 		;0 - no displayed
+                 		;1 - first alarm
+                 		;2 - second alarm
+                 
+                 
+                 	;----------Timer/Counter2 variables----------
+00006b           	mRTCClockCount: .BYTE 1		;Temp counter for Timer/Counter0
+00006c           	mRTCTimeIncrement: .BYTE 1	;1 - we must to increment current time value in main cycle, 0 - do nothing
+                 
+                 
+                 	;----------Output variables-----------
+00006d           	mCommonBrightness: .BYTE 1  ;Brightness of all leds and digits. Changes from 0x00 to 0x0f
+00006e           	mRawDisplayData: .BYTE 16  ;Contains output data for digits and leds
+                 		;Channel is two following bytes (starting from even byte) that contains
+                 		;information for two digits or two led groups
+                 		
+                 		;7-segment display:
+                 		;     __/ <-1
+                 		;2->|    |<-3
+                 		;     --  <-4
+                 		;5->| __ |<-6 ./<-8
+                 		;       \ <-7
+                 		;One channel format:
+                 		;Bits:     7 6 5 4 3 2 1 0
+                 		;Segments: 7 6 5 4 3 2 1 8 (zero bit is for dot)
+                 		
+                 		;byte - the first channel, byte+1 - the second channel
+                 		;Channels
+                 		;[Channel number(+offset)]
+                 		;0(+0) -  0:7 - time first digit
+                 		;         8:15 - time second digit
+                 		;1(+2) -  0:7 - time third digit
+                 		;         8:15 - time forth digit
+                 		;2(+4) -  0:7 - date first digit
+                 		;         8:15 - date second digit
+                 		;3(+6) -  0:7 - date third digit
+                 		;         8:15 - date forth digit
+                 		;4(+8) -  0:7 - alarm/frequency first digit
+                 		;         8:15 - alarm/frequency second digit
+                 		;5(+10) - 0:7 - alarm/frequency third digit
+                 		;         8:15 - alarm/frequency forth digit
+                 		;6(+12) - 0:3 - time colon leds
+                 		;         8:14 - day of week indicators
+                 		;         15 - alarm colon led
+                 		;7(+14) - 0:1 - alarm buttons indicators
+                 		;         2:4 - radio buttons indicators
+00007e           	mCurrentOutChannel: .BYTE 1  ;Determines which digit should be displayed on current 
+                 		;iteration of display cycle. InitValue=0
+00007f           	mElementBrightness: .BYTE 128 ;Each element (led or segment) has its separate brightness
+                 		;It changes from 0x00 to 0x0f. Higher values will interpret as 0x0f
+                 		;This brightness is relative on common brightness
+                 		;0xf for one element means common brightness
+                 		;Structure of data is same as mRawDisplayData
+0000ff           	mElementBrightnessCounter: .BYTE 1 ;Changes from 0x00 to 0x0f and holds count of 
+                 		;Timer/Counter0 ticks before mCurrentOutChannel changes
+000100           	mRecalculateChannelsData: .BYTE 1 ;If 1 then we must to recalculate all channel 
+                 		;data in main cycle
+000101           	mAlwaysRecalculateChannelsData: .BYTE 1; If 1 we must to recalculate all channel
+                 		;data on each main cycle iteration independently on mRecalculateChannelsData value
+000102           	mBrightnessRatio: .BYTE 1 ;Factor to current common brightness value. Uses to
+                 		;tune brightness value depending on room's light, Changes from 1 to 20 (means from 0.1 to 2.0)
+                 
+                 
+                 	;----------Input variables------------
+000103           	mInputState: .BYTE 2 ;Input controls that are currently activated
+000105           	mFotoSensor: .BYTE 2
+000107           	mEncoderInitialized: .BYTE 1 ;Uses for initialization encoder, i.e. getting its initial value
+000108           	mLastInputState: .BYTE 2	 ;Input controls that was activated in last input reading
+00010a           	mButtonDelay: .BYTE 1	;Delay before the same button will be triggered if it still pressed
+                 		;Decrements by Timer/Counter0
+                 
+                 
+                 	;----------Settings variables----------
+00010b           	mCurrentTimePart: .BYTE 1 ;Uses on settings mode to choose which time part 
+                 		;currently changing (0 - none)
+00010c           	mEncoderValue: .BYTE 1 ;Last stored encoder value (number, not bits)
+00010d           	mSettingsIncrement: .BYTE 1 ;How much value we should add to changing time part
+                 		;on each encoder pulse (progressive settings changing, depended on encoder 
+                 		;rotation speed). First 5 bits are increment value, last 3 bits are tick count.
+                 		;Decrements by Timer/Counter0
+00010e           	mBrightnessRatioSet: .BYTE 1 ;1 when brightness ratio button is pressing
+                 		;and user able to tune brightness ratio.
+                 
+                 .cseg
+                 	;==========REGISTERS============
+                 	;r0:r1 - results of functions executing
+                 	;r2 - uses for counting subroutines call depth
+                 	;r3:r7 - general code registers level 1
+                 	;r8:r12 - general code registers level 2 (also they can be used as parameters starting from r8)
+                 	;r13:r15 - interrupt registers
+                 	;r16:r19 - general code registers with immediate loading level 1
+                 	;r20:r23 - general code registers with immediate loading level 2
+                 	;r24:r25 - interrupt registers with immediate loading
+                 	;X (r26:r27) pointer uses by interrupts so we must not use it in general code
+                 	.def rRes = r0
+                 	.def rRes2 = r1
+                 	.def rPar1 = r8
+                 	.def rPar2 = r9
+                 	.def rPar3 = r10
+                 	.def rTmp = r16
+                 	.def rTmpInt = r21
+                 
+                 
+                 	;==========CONSTANTS==================
+                 	;----------Output constants-----------
+                 	.equ cOutChannelsCount = 8
+                 
+                 	;----------Input constants------------
+                 	.equ cButtonsWithDelayL = 0b00001111 ;Select all buttons that must be delayed after its pressing
+                 	.equ cButtonsWithDelayH = 0b11111111 ;Switches and encoder we are not select because switch contacts are
+                 		;closed in any time and encoder dont need in delay
+                 	.equ cButtonDelay = 200 ;How much time we wait before the same button will be triggered
+                 		;if it still pressed (how many times to about 2 ms). Empirical value
+                 
+                 
+                 	;Number of bits in input bytes for appropriate swtiches and buttons
+                 	.equ cAEncoder = 7	;<---The first byte
+                 	.equ cBEncoder = 6
+                 	.equ cSettingsSwitch = 5
+                 	.equ cUpButton = 4
+                 	.equ cDownButton = 3
+                 	.equ cFirstAlarmButton = 2
+                 	.equ cSecondAlarmButton = 1
+                 	.equ cRadioButton = 0
+                 	.equ cBrightnessRatioButton = 7 ;<---The second byte
+                 ;--------Interrupt vector table----------------------
+                 .org $000
+000000 940c 089d 	jmp RESET
+                 .org INT0addr
+000002 9518      	reti
+                 .org INT1addr
+000004 9518      	reti
+                 .org INT2addr
+000006 9518      	reti
+                 .org OC2addr
+000008 940c 0029 	jmp RTCTICK
+                 .org OVF2addr
+00000a 9518      	reti
+                 .org ICP1addr
+00000c 9518      	reti
+                 .org OC1Aaddr
+00000e 9518      	reti
+                 .org OC1Baddr
+000010 9518      	reti
+                 .org OVF1addr
+000012 9518      	reti
+                 .org OC0addr
+000014 940c 0041 	jmp DYNAMICINDICATION
+                 .org OVF0addr
+000016 9518      	reti
+                 .org SPIaddr
+000018 9518      	reti
+                 .org URXCaddr
+00001a 9518      	reti
+                 .org UDREaddr
+00001c 9518      	reti
+                 .org UTXCaddr
+00001e 9518      	reti
+                 .org ADCCaddr
+000020 940c 0073 	jmp ADCREADY
+                 .org ERDYaddr
+000022 9518      	reti
+                 .org ACIaddr
+000024 9518      	reti
+                 .org TWIaddr
+000026 9518      	reti
+                 .org SPMRaddr
+000028 9518      	reti
+                 ;--------End interrupt vector table----------------
+                 
+                 .include "macros.asm"
+                 
+                 ;It puts all parameters to registers and calls function
+                 .macro call1
+                 	cli
+                 	push r8
+                 	mov rPar1, @1
+                 	call @0
+                 	pop r8
+                 .endmacro
+                 
+                 
+                 ;This macros uses for calling subroutine with 2 parameters
+                 ;It puts all parameters to registers and calls function
+                 ;no need to sei instruction - it will set by function_begin
+                 .macro call2
+                 	cli
+                 	push r8
+                 	push r9
+                 	mov rPar1, @1
+                 	mov rPar2, @2
+                 	call @0
+                 	pop r9
+                 	pop r8
+                 .endmacro
+                 
+                 
+                 
+                 ;This macros uses for calling subroutine with 3 parameters
+                 ;It puts all parameters to registers and calls function
+                 .macro call3
+                 	cli
+                 	push r8
+                 	push r9
+                 	push r10
+                 	mov rPar1, @1
+                 	mov rPar2, @2
+                 	mov rPar3, @3
+                 	call @0
+                 	pop r10
+                 	pop r9
+                 	pop r8
+                 .endmacro
+                 
+                 
+                 
+                 ;This macros should preceed any commands in each subroutine
+                 ;The macros checks whether call of this subroutine is the first call in the stack
+                 ;If not this macros saves registers state in the stack
+                 .macro function_begin
+                 	cli
+                 	push YH
+                 	push YL
+                 	push ZH
+                 	push ZL
+                 	tst r2
+                 	breq _@0_incr0
+                 	push r10
+                 	push r11
+                 	push r12
+                 	push r20
+                 	push r21
+                 	push r22
+                 	push r23
+                 	push rPar1
+                 	push rPar2
+                 _@0_incr0:
+                 	inc r2
+                 	sei
+                 .endmacro
+                 
+                 
+                 ;This macros should be placed at the end of each subroutine after all commmand
+                 ;The macros check whether call of this subroutine is the first call in the stack
+                 ;If not this macros restores registers state from the stack
+                 ;ret instruction must not be used before calling the macros
+                 .macro function_end
+                 	cli
+                 	dec r2
+                 	breq _@0_ret
+                 	pop rPar2
+                 	pop rPar1
+                 	pop r23
+                 	pop r22
+                 	pop r21
+                 	pop r20
+                 	pop r12
+                 	pop r11
+                 	pop r10
+                 _@0_ret:
+                 	pop ZL
+                 	pop ZH
+                 	pop YL
+                 	pop YH
+                 	sei
+                 	ret
+                 .endmacro
+                 
+                 
+                 ;This macros should proceed any commands on each interrupt handler
+                 ;The macros saves to the stack rRes and rRes2 registers for ability to call
+                 ; subroutines in handlers
+                 .macro interrupt_begin
+                 	push rRes
+                 	push rRes2
+                 .endmacro
+                 
+                 ;This macros should be placed at the end of each interrupt handler
+                 ;The macros restores rRes and rRes2 registers from the stack
+                 ;reti instruction must not be used before calling the macros
+                 .macro interrupt_end
+                 	pop rRes2
+                 	pop rRes
+                 	reti
+                 .include "interrupts.asm"
+                 
+                 
+                 ;=======function RTCTICK()=============================
+                 RTCTICK: 
+000029 920f
+00002a 921f      interrupt_begin RTCTICK
+00002b 9180 006b 	lds r24, mRTCClockCount
+00002d 9583      	inc r24
+00002e 378e      	cpi r24, 126
+00002f f421      	brne RTCTICK_setTimeColon
+000030 2788      	clr r24
+000031 e091      	ldi r25, 1
+000032 9390 006c 	sts mRTCTimeIncrement, r25
+                 
+                 RTCTICK_setTimeColon:
+000034 940e 04ab 	call GetTimeColonStatus
+000036 9190 007a 	lds r25, mRawDisplayData + 12
+000038 709f      	andi r25, 0x0f
+000039 2990      	or r25, rRes
+00003a 9390 007a 	sts mRawDisplayData + 12, r25
+                 
+                 RTCTICK_return:
+00003c 9380 006b 	sts mRTCClockCount, r24
+00003e 901f
+00003f 900f
+000040 9518      interrupt_end RTCTICK
+                 ;======End RTCTICK==================================
+                 
+                 ;======function DYNAMICINDICATION()==========================
+                 DYNAMICINDICATION:
+000041 920f
+000042 921f      interrupt_begin DYNAMICINDICATION
+000043 9180 00ff 	lds r24, mElementBrightnessCounter
+000045 3180      	cpi r24, 0x10
+000046 f4d1      	brne DYNAMICINDICATION_calculateBrightness
+                 
+                 	;This code is executed about every 2 ms
+000047 98dc      	cbi PORTA, 4 ;Disable display while we calculate brightness for next channel
+000048 2788      	clr r24
+000049 9190 007e 	lds r25, mCurrentOutChannel
+00004b 9593      	inc r25
+00004c 9390 007e 	sts mCurrentOutChannel, r25
+00004e 3098      	cpi r25, cOutChannelsCount
+00004f f419      	brne DYNAMICINDICATION_buttonDelay
+000050 2799      	clr r25
+000051 9390 007e 	sts mCurrentOutChannel, r25
+                 
+                 DYNAMICINDICATION_buttonDelay:
+                 	;Decrement button delay
+000053 9190 010a 	lds r25, mButtonDelay
+000055 2399      	tst r25
+000056 f019      	breq DYNAMICINDICATION_settingsIncrement
+000057 959a      	dec r25
+000058 9390 010a 	sts mButtonDelay, r25
+                 
+                 DYNAMICINDICATION_settingsIncrement:
+                 	;Decrement settings increment value (uses for progressive settings changing)
+00005a 9190 010d 	lds r25, mSettingsIncrement
+00005c 3099      	cpi r25, 0b00001001 ;see mSettingsIncrement description in definitions.asm
+00005d f090      	brlo DYNAMICINDICATION_return
+00005e 959a      	dec r25
+00005f 9390 010d 	sts mSettingsIncrement, r25
+                 
+                 DYNAMICINDICATION_calculateBrightness:
+000061 940e 008f 	call CalculateBrightness
+000063 94f8
+000064 928f
+000065 929f
+000066 2c80
+000067 2c91
+000068 940e 00df
+00006a 909f
+00006b 908f      	call2 OutChannels, rRes, rRes2
+00006c 9adc      	sbi PORTA, 4 ;Enable display if it disabled
+00006d 9583      	inc r24
+00006e 9380 00ff 	sts mElementBrightnessCounter, r24
+                 
+                 DYNAMICINDICATION_return:
+000070 901f
+000071 900f
+000072 9518      interrupt_end DYNAMICINDICATION
+                 ;======End DYNAMICINDICATION()===============================
+                 
+                 
+                 ;========function ADCREADY()======================
+                 ADCREADY:
+000073 920f
+000074 921f      interrupt_begin ADCREADY
+000075 b0d4      	in r13, ADCL
+000076 b0e5      	in r14, ADCH
+000077 90f0 0102 	lds r15, mBrightnessRatio
+000079 e09a      	ldi r25, 10
+                 
+00007a 0cee      	lsl r14
+00007b 1cdd      	rol r13
+00007c 0cee      	lsl r14
+00007d 1cdd      	rol r13
+00007e e08f      	ldi r24, 0x0f
+00007f 198d      	sub r24, r13 ;calculated common brightness
+000080 9d8f      	mul r24, r15
+000081 94f8
+000082 928f
+000083 929f
+000084 2e88
+000085 2e99
+000086 940e 0644
+000088 909f
+000089 908f      	call2 Divide, r24, r25 ;Cacluclated common brightness given with importance of brightness ratio
+                 	
+00008a 9380 006d 	sts mCommonBrightness, r24
+00008c 901f
+00008d 900f
+00008e 9518      interrupt_end ADCREADY
+                 ;========End ADCREADY()===========================
+                 
+                 ;------End interrupt handlers-------------------
+                 
+                 
+                 ;--------Functions--------------------------------
+                 
+                 ;========function CalculateBrightness()===========
+                 ;Changes output data for each element depending on its individual brightness value
+                 CalculateBrightness:
+00008f 94f8
+000090 93df
+000091 93cf
+000092 93ff
+000093 93ef
+000094 2022
+000095 f049
+000096 92af
+000097 92bf
+000098 92cf
+000099 934f
+00009a 935f
+00009b 936f
+00009c 937f
+00009d 928f
+00009e 929f
+00009f 9423
+0000a0 9478      function_begin CalculateBrightness
+0000a1 24cc      	clr r12
+0000a2 9080 006d 	lds r8, mCommonBrightness
+0000a4 9090 00ff 	lds r9, mElementBrightnessCounter
+0000a6 9480      	com r8
+0000a7 0c98      	add r9, r8 ;Add one'scomplement value of common brightness for switching off all
+                 		;elements early. The less common brightness has value the less part of time
+                 		;all elements will be switched on
+0000a8 90a0 007e 	lds r10, mCurrentOutChannel
+0000aa e6ee      	ldi ZL, low(mRawDisplayData)
+0000ab e0f0      	ldi ZH, high(mRawDisplayData)
+0000ac 0caa      	lsl r10
+0000ad 0dea      	add ZL, r10 ;Now Z points to the part of mOutChannelData of current channel
+0000ae 1dfc      	adc ZH, r12
+0000af 9141      	ld r20, Z+
+0000b0 9151      	ld r21, Z+
+0000b1 24bb      	clr r11 ;mask to clearing current bit (AND operation) from input data (init value 0b01111111)
+0000b2 94b0      	com r11	;
+0000b3 94b6      	lsr r11	;
+0000b4 e7ef      	ldi ZL, low(mElementBrightness)
+0000b5 e0f0      	ldi ZH, high(mElementBrightness)
+0000b6 0caa      	lsl r10
+0000b7 0caa      	lsl r10
+0000b8 0caa      	lsl r10
+0000b9 0dea      	add ZL, r10 ;Now Z points to the part of mElementBrightness of current channel
+0000ba 1dfc      	adc ZH, r12
+0000bb 24aa      	clr r10 ;If we are setting the second channel it will be 1
+                 CalculateBrightness_readBrightness: ;Determine whether we should to show each element depending on its brightness value
+0000bc 9169      	ld r22, Y+
+0000bd 1696      	cp r9, r22
+0000be f008      	brlo CalculateBrightness_lastElementCheck
+0000bf 214b      	and r20, r11 ;clear bit if time of lighting of appropriate element has expired
+                 		;(it has lower brightness then other elements)
+                 CalculateBrightness_lastElementCheck:
+0000c0 9408      	sec			;rotate shift right to one bit with 1 fill
+0000c1 94b7      	ror r11 ;
+0000c2 f3c8      	brcs CalculateBrightness_readBrightness
+                 CalculateBrightness_nextChannel:
+0000c3 20aa      	tst r10 ;Test whether there is second channel (r10 will be 1)
+0000c4 f431      	brne CalculateBrightness_return
+0000c5 2745      	eor r20, r21 ;exchange registers
+0000c6 2754      	eor r21, r20 ;
+0000c7 2745      	eor r20, r21 ;
+0000c8 94a3      	inc r10
+0000c9 94b6      	lsr r11 ;Restore init value (0b01111111)
+0000ca cff1      	rjmp CalculateBrightness_readBrightness
+                 CalculateBrightness_return:
+0000cb 2e05      	mov rRes, r21 ;The first part of channel
+0000cc 2e14      	mov rRes2, r20 ;The second part of channel
+0000cd 94f8
+0000ce 942a
+0000cf f049
+0000d0 909f
+0000d1 908f
+0000d2 917f
+0000d3 916f
+0000d4 915f
+0000d5 914f
+0000d6 90cf
+0000d7 90bf
+0000d8 90af
+0000d9 91ef
+0000da 91ff
+0000db 91cf
+0000dc 91df
+0000dd 9478
+0000de 9508      function_end CalculateBrightness
+                 ;========End CalculateBrightness()================
+                 
+                 
+                 ;========function OutChannels(byte1, byte2)============
+                 ;Simply moves input bytes to the ports (with moving any bits to the PORTC)
+                 OutChannels:
+0000df 94f8
+0000e0 93df
+0000e1 93cf
+0000e2 93ff
+0000e3 93ef
+0000e4 2022
+0000e5 f049
+0000e6 92af
+0000e7 92bf
+0000e8 92cf
+0000e9 934f
+0000ea 935f
+0000eb 936f
+0000ec 937f
+0000ed 928f
+0000ee 929f
+0000ef 9423
+0000f0 9478      function_begin OutChannels
+0000f1 2766      	clr r22
+0000f2 2d48      	mov r20, rPar1	
+0000f3 2d59      	mov r21, rPar2
+0000f4 fd43      	sbrc r20, 3		;move bit 3 from each port to the high 2 bits of PORTC
+0000f5 6460      	sbr r22, 0x40	;
+0000f6 fd53      	sbrc r21, 3		;
+0000f7 6860      	sbr r22, 0x80	;
+0000f8 7f4b      	cbr r20, 0x04	;
+0000f9 7f5b      	cbr r21, 0x04	;
+                 
+0000fa b375      	in r23, PORTC
+0000fb 737f      	andi r23, 0b00111111
+0000fc 2b67      	or r22, r23
+0000fd bb48      	out PORTB, r20
+0000fe bb52      	out PORTD, r21
+0000ff bb65      	out PORTC, r22
+000100 94f8
+000101 942a
+000102 f049
+000103 909f
+000104 908f
+000105 917f
+000106 916f
+000107 915f
+000108 914f
+000109 90cf
+00010a 90bf
+00010b 90af
+00010c 91ef
+00010d 91ff
+00010e 91cf
+00010f 91df
+000110 9478
+000111 9508      function_end OutChannels
+                 ;========End OutChannels()=============================
+                 
+                 ;--------End functions----------------------------
+                 .include "input\input.asm"
+                 
+                 ;Functions reads data from keyboard shift registers and puts it to mInputState
+                 ReadKeyboard:
+000112 94f8
+000113 93df
+000114 93cf
+000115 93ff
+000116 93ef
+000117 2022
+000118 f049
+000119 92af
+00011a 92bf
+00011b 92cf
+00011c 934f
+00011d 935f
+00011e 936f
+00011f 937f
+000120 928f
+000121 929f
+000122 9423
+000123 9478      function_begin ReadKeyboard
+000124 b749      	in r20, TIMSK ;PORTA should not be changed while this chunk of code executes, so restrict T/C0 interrupts
+000125 7f4c      	andi r20, ~((1<<TOIE0) | (1<<OCIE0))
+000126 bf49      	out TIMSK, r20
+                 
+                 	;LOW impulse to PL pin of shift register to lock inputs
+000127 98da      	cbi PORTA, PORTA2
+000128 0000      	nop
+000129 9ada      	sbi PORTA, PORTA2
+                 
+00012a 2488      	clr r8
+00012b 2499      	clr r9
+00012c e150      	ldi r21, 16
+                 ReadKeyboard_read:
+00012d 0c99      	lsl r9
+00012e 1c88      	rol r8
+                 	
+                 	;Get next bit
+00012f 99c8      	sbic PINA, PINA0
+000130 9493      	inc r9
+                 
+                 	;Clock impulse
+000131 98d9      	cbi PORTA, PORTA1
+000132 9ad9      	sbi PORTA, PORTA1
+                 
+000133 955a      	dec r21
+000134 f7c1      	brne ReadKeyboard_read
+                 
+000135 b749      	in r20, TIMSK
+000136 6043      	ori r20, (1<<TOIE0) | (1<<OCIE0)
+000137 bf49      	out TIMSK, r20
+                 
+000138 90a0 0103 	lds r10, mInputState
+00013a 90b0 0104 	lds r11, mInputState + 1
+00013c 92a0 0108 	sts mLastInputState, r10
+00013e 92b0 0109 	sts mLastInputState + 1, r11
+000140 9280 0103 	sts mInputState, r8
+000142 9290 0104 	sts mInputState + 1, r9
+000144 94f8
+000145 942a
+000146 f049
+000147 909f
+000148 908f
+000149 917f
+00014a 916f
+00014b 915f
+00014c 914f
+00014d 90cf
+00014e 90bf
+00014f 90af
+000150 91ef
+000151 91ff
+000152 91cf
+000153 91df
+000154 9478
+000155 9508      function_end ReadKeyboard
+                 ;========End ReadKeyboard()========================
+                 
+                 
+                 ;========function ExecuteInputEvent()==============
+                 ;Calls appropriate action based on signals on input
+                 ;In other words the function executes event function linked with
+                 ;buttons or their combinations
+                 ExecuteInputEvent:
+000156 94f8
+000157 93df
+000158 93cf
+000159 93ff
+00015a 93ef
+00015b 2022
+00015c f049
+00015d 92af
+00015e 92bf
+00015f 92cf
+000160 934f
+000161 935f
+000162 936f
+000163 937f
+000164 928f
+000165 929f
+000166 9423
+000167 9478      function_begin ExecuteInputEvent
+000168 9080 0103 	lds r8, mInputState
+00016a 9090 0104 	lds r9, mInputState + 1
+00016c 90a0 0108 	lds r10, mLastInputState
+00016e 90b0 0109 	lds r11, mLastInputState + 1
+000170 24a8      	eor r10, r8 ;Determine what input controls changed their state
+000171 f421      	brne ExecuteInputEvent_eventHandling
+000172 24b9      	eor r11, r9
+000173 f411      	brne ExecuteInputEvent_eventHandling
+000174 940c 01bd 	jmp ExecuteInputEvent_return
+                 	
+                 ExecuteInputEvent_eventHandling:
+000176 2d48      	mov r20, r8
+000177 2d59      	mov r21, r9
+000178 214a      	and r20, r10 ;Select only bits of changed and pressed keys from input data
+000179 215b      	and r21, r11 ;
+                 	
+                 	;Settings switch
+00017a fca5      	sbrc r10, cSettingsSwitch
+00017b c006      	rjmp ExecuteInputEvent_up
+00017c fc85      	sbrc r8, cSettingsSwitch
+00017d 940e 02c5 	call OnSettingsOn ;Encoder just pulled
+00017f fe85      	sbrs r8, cSettingsSwitch
+000180 940e 02fa 	call OnSettingsOff ;Encoder just pushed
+                 	
+                 ExecuteInputEvent_up:
+                 	;Encoder just pushed up
+000182 fd44      	sbrc r20, cUpButton
+000183 940e 0328 	call OnEncoderUp
+                 
+                 	;Encoder just pushed down
+000185 fd43      	sbrc r20, cDownButton
+000186 940e 035d 	call OnEncoderDown
+                 	
+                 	;First alarm button pushed
+000188 fd42      	sbrc r20, cFirstAlarmButton
+000189 940e 0393 	call OnFirstAlarm
+                 
+                 	;Second alarm button pushed
+00018b fd41      	sbrc r20, cSecondAlarmButton
+00018c 940e 03cb 	call OnSecondAlarm
+                 
+                 	;Brightness ratio button
+00018e fca7      	sbrc r10, cBrightnessRatioButton
+00018f c006      	rjmp ExecuteInputEvent_encoder ;Brightness ratio button did not change its state
+000190 fc87      	sbrc r8, cBrightnessRatioButton
+000191 940e 0403 	call OnBrightnessRatioDown ;Brightness ratio button just pressed
+000193 fe87      	sbrs r8, cBrightnessRatioButton
+000194 940e 042a 	call OnBrightnessRatioUp ;Brightness ratio button just released
+                 
+                 	;Encoder rotation detection
+                 ExecuteInputEvent_encoder:
+000196 2d6a      	mov r22, r10
+000197 7067      	andi r22, cAEncoder | cBEncoder
+000198 f101      	breq ExecuteInputEvent_finishActions ;Encoder was not rotated
+                 	
+000199 2d68      	mov r22, r8
+00019a 7067      	andi r22, cAEncoder | cBEncoder
+00019b 9488      	clc
+00019c 1f66      	rol r22 ;Convert 2-bit gray code to number
+00019d 1f66      	rol r22
+00019e 1f66      	rol r22
+00019f 2f76      	mov r23, r22
+0001a0 9576      	lsr r23
+0001a1 2767      	eor r22, r23 ;r22 is result
+                 
+0001a2 9170 0107 	lds r23, mEncoderInitialized
+0001a4 2377      	tst r23
+0001a5 f431      	brne ExecuteInputEvent_encoderDirection
+                 	;Initialize last encoder value and exit
+0001a6 9573      	inc r23
+0001a7 9360 010c 	sts mEncoderValue, r22
+0001a9 9370 0107 	sts mEncoderInitialized, r23
+0001ab c00d      	rjmp ExecuteInputEvent_finishActions
+                 ExecuteInputEvent_encoderDirection:
+0001ac 9170 010c 	lds r23, mEncoderValue
+0001ae 1767      	cp r22, r23
+0001af 9360 010c 	sts mEncoderValue, r22
+0001b1 f039      	breq ExecuteInputEvent_finishActions
+0001b2 f008      	brlo ExecuteInputEvent_encoderLeft
+0001b3 f418      	brsh ExecuteInputEvent_encoderRight
+                 ExecuteInputEvent_encoderLeft:
+0001b4 940e 0265 	call OnEncoderLeft
+0001b6 c002      	rjmp ExecuteInputEvent_finishActions
+                 ExecuteInputEvent_encoderRight:
+0001b7 940e 0246 	call OnEncoderRight
+                 ExecuteInputEvent_finishActions:
+0001b9 2488      	clr r8
+0001ba 9483      	inc r8
+0001bb 9280 0100 	sts mRecalculateChannelsData, r8
+                 ExecuteInputEvent_return:
+0001bd 94f8
+0001be 942a
+0001bf f049
+0001c0 909f
+0001c1 908f
+0001c2 917f
+0001c3 916f
+0001c4 915f
+0001c5 914f
+0001c6 90cf
+0001c7 90bf
+0001c8 90af
+0001c9 91ef
+0001ca 91ff
+0001cb 91cf
+0001cc 91df
+0001cd 9478
+0001ce 9508      function_end ExecuteInputEvent
+                 ;========End ExecuteInputEvent()===================
+                 
+                 
+                 ;========function DelayButton()====================
+                 ;Buttons (not switch or encoder) need to be delayed after they pressed
+                 ;This function returns 1 in rRes when button needs to be delayed
+                 ;No need to care about contact jitter because reading keyboard frequency is lower
+                 ;then contact jitter duration
+                 DelayButton:
+0001cf 94f8
+0001d0 93df
+0001d1 93cf
+0001d2 93ff
+0001d3 93ef
+0001d4 2022
+0001d5 f049
+0001d6 92af
+0001d7 92bf
+0001d8 92cf
+0001d9 934f
+0001da 935f
+0001db 936f
+0001dc 937f
+0001dd 928f
+0001de 929f
+0001df 9423
+0001e0 9478      function_begin DelayButton
+0001e1 2400      	clr rRes
+0001e2 9160 0103 	lds r22, mInputState
+0001e4 9170 0104 	lds r23, mInputState + 1
+                 
+0001e6 706f      	andi r22, cButtonsWithDelayL
+0001e7 7f7f      	andi r23, cButtonsWithDelayH
+0001e8 2e96      	mov r9, r22
+0001e9 2a97      	or r9, r23	;Check whether no button was pressed
+0001ea f0a1      	breq DelayButton_noButtons
+0001eb 2499      	clr r9
+                 
+0001ec 9140 0108 	lds r20, mLastInputState
+0001ee 9150 0109 	lds r21, mLastInputState + 1
+0001f0 704f      	andi r20, cButtonsWithDelayL
+0001f1 7f5f      	andi r21, cButtonsWithDelayH	
+0001f2 1764      	cp r22, r20	;Pressed buttons is changed so reset delay
+0001f3 f449      	brne DelayButton_reset	;
+0001f4 1775      	cp r23, r21	;
+0001f5 f439      	brne DelayButton_reset	;
+                 
+0001f6 9080 010a 	lds r8, mButtonDelay
+0001f8 948a      	dec r8	
+0001f9 f01a      	brmi DelayButton_reset ;Delay is expired
+                 
+                 DelayButton_yesDelay:
+0001fa 9493      	inc r9
+0001fb 2d58      	mov r21, r8
+0001fc c003      	rjmp DelayButton_return
+                 DelayButton_reset:
+0001fd ec58      	ldi r21, cButtonDelay
+0001fe c001      	rjmp DelayButton_return
+                 DelayButton_noButtons: ;r9 already is zero
+0001ff 2755      	clr r21
+                 DelayButton_return:
+000200 9350 010a 	sts mButtonDelay, r21
+000202 2c09      	mov rRes, r9
+000203 94f8
+000204 942a
+000205 f049
+000206 909f
+000207 908f
+000208 917f
+000209 916f
+00020a 915f
+00020b 914f
+00020c 90cf
+00020d 90bf
+00020e 90af
+00020f 91ef
+000210 91ff
+000211 91cf
+000212 91df
+000213 9478
+000214 9508      function_end DelayButton
+                 ;========End DelayButton()========================
+                 
+                 
+                 ;========function ReadFotosensor()================
+                 ReadFotosensor:
+000215 94f8
+000216 93df
+000217 93cf
+000218 93ff
+000219 93ef
+00021a 2022
+00021b f049
+00021c 92af
+00021d 92bf
+00021e 92cf
+00021f 934f
+000220 935f
+000221 936f
+000222 937f
+000223 928f
+000224 929f
+000225 9423
+000226 9478      function_begin ReadFotosensor
+000227 9a36      	sbi ADCSRA, ADSC
+000228 94f8
+000229 942a
+00022a f049
+00022b 909f
+00022c 908f
+00022d 917f
+00022e 916f
+00022f 915f
+000230 914f
+000231 90cf
+000232 90bf
+000233 90af
+000234 91ef
+000235 91ff
+000236 91cf
+000237 91df
+000238 9478
+000239 9508      function_end ReadFotosensor
+                 ;========End ReadFotosensor()=====================
+                 .include "input\events.asm"
+                 
+                 ;It is complex function with multiple entry points
+                 ;There are:
+                 ;function OnEncoderRight()
+                 ;function OnEncoderLeft()
+                 ;
+                 ;Do NOT call OnEncoder because this label for inner use
+                 OnEncoder:
+00023a 9080 010d 	lds r8, mSettingsIncrement
+00023c 9486      	lsr r8
+00023d 9486      	lsr r8
+00023e 9486      	lsr r8
+00023f 9140 010b 	lds r20, mCurrentTimePart
+000241 9150 010e 	lds r21, mBrightnessRatioSet
+000243 9160 0102 	lds r22, mBrightnessRatio
+000245 9508      	ret
+                 
+                 ;========function OnEncoderRight()==========
+                 OnEncoderRight:
+000246 94f8
+000247 93df
+000248 93cf
+000249 93ff
+00024a 93ef
+00024b 2022
+00024c f049
+00024d 92af
+00024e 92bf
+00024f 92cf
+000250 934f
+000251 935f
+000252 936f
+000253 937f
+000254 928f
+000255 929f
+000256 9423
+000257 9478      function_begin OnEncoderRight
+000258 940e 023a 	call OnEncoder
+                 
+                 OnEncoderRight_brightnessRatio:
+00025a 2355      	tst r21
+00025b f131      	breq OnEncoder_noSettings ;Brightness ratio button not set
+00025c 3164      	cpi r22, 20
+00025d f029      	breq OnEncoderRight_goReturn ;brightness ratio must not be more than 100
+00025e 9563      	inc r22
+00025f 9360 0102 	sts mBrightnessRatio, r22
+000261 940c 02b0 	jmp OnEncoder_return
+                 	
+                 OnEncoderRight_goReturn:
+000263 940c 02b0 	jmp OnEncoder_return
+                 ;========function OnEncoderLeft()==========
+                 OnEncoderLeft:
+000265 94f8
+000266 93df
+000267 93cf
+000268 93ff
+000269 93ef
+00026a 2022
+00026b f049
+00026c 92af
+00026d 92bf
+00026e 92cf
+00026f 934f
+000270 935f
+000271 936f
+000272 937f
+000273 928f
+000274 929f
+000275 9423
+000276 9478      function_begin OnEncoderLeft
+000277 940e 023a 	call OnEncoder
+000279 9481      	neg r8
+                 	
+                 OnEncoderLeft_brightnessRatio:
+00027a 2355      	tst r21
+00027b f031      	breq OnEncoder_noSettings ;Brightness ratio button not set
+00027c 3061      	cpi r22, 1
+00027d f039      	breq OnEncoder_noSettings_goReturn ;brightness ratio must not be less than 0
+00027e 956a      	dec r22
+00027f 9360 0102 	sts mBrightnessRatio, r22
+000281 c02e      	rjmp OnEncoder_return
+                 	
+                 	
+                 OnEncoder_noSettings:
+000282 3040      	cpi r20, 0
+000283 f009      	breq OnEncoder_noSettings_goReturn
+000284 c002      	rjmp OnEncoder_time
+                 OnEncoder_noSettings_goReturn:
+000285 940c 02b0 	jmp OnEncoder_return
+                 
+                 OnEncoder_time: ;Change time (minutes and seconds)
+000287 3041      	cpi r20, 1
+000288 f439      	brne OnEncoder_date
+000289 94f8
+00028a 928f
+00028b 2c88
+00028c 940e 0718
+00028e 908f      	call1 IncreaseMinutes, r8
+00028f c020      	rjmp OnEncoder_return
+                 
+                 OnEncoder_date: ;Change date (days and months)
+000290 3042      	cpi r20, 2
+000291 f439      	brne OnEncoder_dayOfWeek
+000292 94f8
+000293 928f
+000294 2c88
+000295 940e 0793
+000297 908f      	call1 IncreaseDays, r8
+000298 c017      	rjmp OnEncoder_return
+                 
+                 OnEncoder_dayOfWeek:
+000299 3043      	cpi r20, 3
+00029a f439      	brne OnEncoder_alarm
+00029b 94f8
+00029c 928f
+00029d 2c88
+00029e 940e 0769
+0002a0 908f      	call1 IncreaseDaysOfWeek, r8
+0002a1 c00e      	rjmp OnEncoder_return
+                 
+                 OnEncoder_alarm:
+0002a2 9150 006a 	lds r21, mCurrentAlarm
+0002a4 2355      	tst r21
+0002a5 f051      	breq OnEncoder_return ;No active alarm (unlikely)
+0002a6 94f8
+0002a7 928f
+0002a8 929f
+0002a9 2c88
+0002aa 2e95
+0002ab 940e 080a
+0002ad 909f
+0002ae 908f      	call2 IncreaseAlarmMinutes, r8, r21
+0002af c000      	rjmp OnEncoder_return
+                 
+                 OnEncoder_return:
+0002b0 ef5f      	ser r21
+0002b1 9350 010d 	sts mSettingsIncrement, r21
+0002b3 94f8
+0002b4 942a
+0002b5 f049
+0002b6 909f
+0002b7 908f
+0002b8 917f
+0002b9 916f
+0002ba 915f
+0002bb 914f
+0002bc 90cf
+0002bd 90bf
+0002be 90af
+0002bf 91ef
+0002c0 91ff
+0002c1 91cf
+0002c2 91df
+0002c3 9478
+0002c4 9508      function_end OnEncoderRight
+                 ;========End OnEncoder=============================
+                 
+                 
+                 ;========function OnSettingsOn()===================
+                 ;Calls when user enters to settings mode
+                 OnSettingsOn:
+0002c5 94f8
+0002c6 93df
+0002c7 93cf
+0002c8 93ff
+0002c9 93ef
+0002ca 2022
+0002cb f049
+0002cc 92af
+0002cd 92bf
+0002ce 92cf
+0002cf 934f
+0002d0 935f
+0002d1 936f
+0002d2 937f
+0002d3 928f
+0002d4 929f
+0002d5 9423
+0002d6 9478      function_begin OnSettingsOn
+0002d7 9140 006a 	lds r20, mCurrentAlarm
+0002d9 2344      	tst r20
+0002da f411      	brne OnSettingsOn_alarmAsCurrentTimePart
+0002db e051      	ldi r21, 1
+0002dc c001      	rjmp OnSettingsOn_setCurrentTimePart
+                 OnSettingsOn_alarmAsCurrentTimePart:
+0002dd e054      	ldi r21, 4
+                 OnSettingsOn_setCurrentTimePart:
+0002de 9350 010b 	sts mCurrentTimePart, r21
+                 
+                 	;Disable RTC
+0002e0 b749      	in r20, TIMSK
+0002e1 734f      	andi r20, ~((1<<TOIE2) | (1<<OCIE2))
+0002e2 bf49      	out TIMSK, r20
+                 
+                 	;Reset seconds to 00
+0002e3 e040      	ldi r20, 0
+0002e4 9340 0060 	sts mSecond, r20
+                 
+0002e6 940e 05bf 	call SetSettingsBrightness
+                 OnSettingsOn_return:
+0002e8 94f8
+0002e9 942a
+0002ea f049
+0002eb 909f
+0002ec 908f
+0002ed 917f
+0002ee 916f
+0002ef 915f
+0002f0 914f
+0002f1 90cf
+0002f2 90bf
+0002f3 90af
+0002f4 91ef
+0002f5 91ff
+0002f6 91cf
+0002f7 91df
+0002f8 9478
+0002f9 9508      function_end OnSettingsOn
+                 ;========End OnSettingsOn()========================
+                 
+                 
+                 ;========function OnSettingsOff()==================
+                 ;Calls when user leaves settings mode
+                 OnSettingsOff:
+0002fa 94f8
+0002fb 93df
+0002fc 93cf
+0002fd 93ff
+0002fe 93ef
+0002ff 2022
+000300 f049
+000301 92af
+000302 92bf
+000303 92cf
+000304 934f
+000305 935f
+000306 936f
+000307 937f
+000308 928f
+000309 929f
+00030a 9423
+00030b 9478      function_begin OnSettingsOff
+00030c 2744      	clr r20
+00030d 9340 010b 	sts mCurrentTimePart, r20
+00030f 9340 006b 	sts mRTCClockCount, r20
+                 
+                 	;Enable RTC
+000311 b749      	in r20, TIMSK
+000312 6c40      	ori r20, (1<<TOIE2) | (1<<OCIE2)
+000313 bf49      	out TIMSK, r20
+                 
+                 OnSettingsOff_return:
+000314 940e 05bf 	call SetSettingsBrightness
+000316 94f8
+000317 942a
+000318 f049
+000319 909f
+00031a 908f
+00031b 917f
+00031c 916f
+00031d 915f
+00031e 914f
+00031f 90cf
+000320 90bf
+000321 90af
+000322 91ef
+000323 91ff
+000324 91cf
+000325 91df
+000326 9478
+000327 9508      function_end OnSettingsOff
+                 ;========End OnSettingsOff()=======================
+                 
+                 
+                 ;========function OnEncoderUp()===================
+                 ;Calls when user switches time part to change
+                 OnEncoderUp:
+000328 94f8
+000329 93df
+00032a 93cf
+00032b 93ff
+00032c 93ef
+00032d 2022
+00032e f049
+00032f 92af
+000330 92bf
+000331 92cf
+000332 934f
+000333 935f
+000334 936f
+000335 937f
+000336 928f
+000337 929f
+000338 9423
+000339 9478      function_begin OnEncoderUp
+00033a 9140 010b 	lds r20, mCurrentTimePart
+00033c 2344      	tst r20
+00033d f059      	breq OnEncoderUp_return ;Settings mode disabled
+00033e 954a      	dec r20
+00033f f439      	brne OnEncoderUp_setCurrentTimePart ;Current time part did not overflow
+000340 9150 006a 	lds r21, mCurrentAlarm
+000342 2355      	tst r21
+000343 f411      	brne OnEncoderUp_alarmEnabled ;mCurrentTimePart overflowed, alarm enabled, 
+                 		;set mCurrentTimePart to the alarm display
+000344 e043      	ldi r20, 3 ;mCurrentTimePart overflowed, alarm disabled, set mCurrentTimePart
+                 		;to the day of week leds line
+000345 c001      	rjmp OnEncoderUp_setCurrentTimePart
+                 	
+                 OnEncoderUp_alarmEnabled:
+000346 e044      	ldi r20, 4
+                 OnEncoderUp_setCurrentTimePart:
+000347 9340 010b 	sts mCurrentTimePart, r20
+                 
+                 OnEncoderUp_return:
+000349 940e 05bf 	call SetSettingsBrightness
+00034b 94f8
+00034c 942a
+00034d f049
+00034e 909f
+00034f 908f
+000350 917f
+000351 916f
+000352 915f
+000353 914f
+000354 90cf
+000355 90bf
+000356 90af
+000357 91ef
+000358 91ff
+000359 91cf
+00035a 91df
+00035b 9478
+00035c 9508      function_end OnEncoderUp
+                 ;========End OnEncoderUp()========================
+                 
+                 
+                 ;========function OnEncoderDown()=================
+                 ;Calls when user switches time part to change
+                 OnEncoderDown:
+00035d 94f8
+00035e 93df
+00035f 93cf
+000360 93ff
+000361 93ef
+000362 2022
+000363 f049
+000364 92af
+000365 92bf
+000366 92cf
+000367 934f
+000368 935f
+000369 936f
+00036a 937f
+00036b 928f
+00036c 929f
+00036d 9423
+00036e 9478      function_begin OnEncoderDown
+00036f 9140 010b 	lds r20, mCurrentTimePart
+000371 9543      	inc r20
+000372 9150 006a 	lds r21, mCurrentAlarm
+000374 2355      	tst r21
+000375 f019      	breq OnEncoderDown_alarmDisabled ;Comparing if alarm disabled
+000376 3045      	cpi r20, 5
+000377 f420      	brsh OnEncoderDown_overflow ;Reset mCurrentTimePart if overflowed (alarm enabled)
+000378 c004      	rjmp OnEncoderDown_setCurrentTimePart ;No overflow
+                 
+                 OnEncoderDown_alarmDisabled:
+000379 3044      	cpi r20, 4
+00037a f408      	brsh OnEncoderDown_overflow ;Reset mCurrentTimePart if overflowed (alarm disabled)
+00037b c001      	rjmp OnEncoderDown_setCurrentTimePart
+                 OnEncoderDown_overflow:
+00037c e040      	ldi r20, 0
+                 OnEncoderDown_setCurrentTimePart:
+00037d 9340 010b 	sts mCurrentTimePart, r20
+                 
+                 OnEncoderDown_return:
+00037f 940e 05bf 	call SetSettingsBrightness
+000381 94f8
+000382 942a
+000383 f049
+000384 909f
+000385 908f
+000386 917f
+000387 916f
+000388 915f
+000389 914f
+00038a 90cf
+00038b 90bf
+00038c 90af
+00038d 91ef
+00038e 91ff
+00038f 91cf
+000390 91df
+000391 9478
+000392 9508      function_end OnEncoderDown
+                 ;========End OnEncoderDown()======================
+                 
+                 
+                 ;========function OnFirstAlarm()===========
+                 ;User is enabled or disabled the first alarm
+                 OnFirstAlarm:
+000393 94f8
+000394 93df
+000395 93cf
+000396 93ff
+000397 93ef
+000398 2022
+000399 f049
+00039a 92af
+00039b 92bf
+00039c 92cf
+00039d 934f
+00039e 935f
+00039f 936f
+0003a0 937f
+0003a1 928f
+0003a2 929f
+0003a3 9423
+0003a4 9478      function_begin OnFirstAlarm
+0003a5 9170 010b 	lds r23, mCurrentTimePart
+                 	
+0003a7 9140 006a 	lds r20, mCurrentAlarm
+0003a9 3042      	cpi r20, 2
+0003aa f019      	breq OnFirstAlarm_off
+                 OnFirstAlarm_on:
+0003ab e042      	ldi r20, 2
+0003ac e054      	ldi r21, 4
+0003ad c002      	rjmp OnFirstAlarm_checkSettingsMode
+                 OnFirstAlarm_off:
+0003ae e040      	ldi r20, 0
+0003af e053      	ldi r21, 3
+                 OnFirstAlarm_checkSettingsMode:
+0003b0 2377      	tst r23
+0003b1 f409      	brne OnFirstAlarm_return
+0003b2 2755      	clr r21
+                 OnFirstAlarm_return:
+0003b3 9340 006a 	sts mCurrentAlarm, r20
+0003b5 9350 010b 	sts mCurrentTimePart, r21
+0003b7 940e 05bf 	call SetSettingsBrightness
+0003b9 94f8
+0003ba 942a
+0003bb f049
+0003bc 909f
+0003bd 908f
+0003be 917f
+0003bf 916f
+0003c0 915f
+0003c1 914f
+0003c2 90cf
+0003c3 90bf
+0003c4 90af
+0003c5 91ef
+0003c6 91ff
+0003c7 91cf
+0003c8 91df
+0003c9 9478
+0003ca 9508      function_end OnFirstAlarm
+                 ;========End OnFirstAlarm()================
+                 
+                 
+                 ;========function OnSecondAlarm()==========
+                 ;User is enabled or disabled the second alarm
+                 OnSecondAlarm:
+0003cb 94f8
+0003cc 93df
+0003cd 93cf
+0003ce 93ff
+0003cf 93ef
+0003d0 2022
+0003d1 f049
+0003d2 92af
+0003d3 92bf
+0003d4 92cf
+0003d5 934f
+0003d6 935f
+0003d7 936f
+0003d8 937f
+0003d9 928f
+0003da 929f
+0003db 9423
+0003dc 9478      function_begin OnSecondAlarm
+0003dd 9170 010b 	lds r23, mCurrentTimePart
+                 	
+0003df 9140 006a 	lds r20, mCurrentAlarm
+0003e1 3042      	cpi r20, 2
+0003e2 f019      	breq OnSecondAlarm_off
+                 OnSecondAlarm_on:
+0003e3 e042      	ldi r20, 2
+0003e4 e054      	ldi r21, 4
+0003e5 c002      	rjmp OnSecondAlarm_checkSettingsMode
+                 OnSecondAlarm_off:
+0003e6 e040      	ldi r20, 0
+0003e7 e053      	ldi r21, 3
+                 OnSecondAlarm_checkSettingsMode:
+0003e8 2377      	tst r23
+0003e9 f409      	brne OnSecondAlarm_return
+0003ea 2755      	clr r21
+                 OnSecondAlarm_return:
+0003eb 9340 006a 	sts mCurrentAlarm, r20
+0003ed 9350 010b 	sts mCurrentTimePart, r21
+0003ef 940e 05bf 	call SetSettingsBrightness
+0003f1 94f8
+0003f2 942a
+0003f3 f049
+0003f4 909f
+0003f5 908f
+0003f6 917f
+0003f7 916f
+0003f8 915f
+0003f9 914f
+0003fa 90cf
+0003fb 90bf
+0003fc 90af
+0003fd 91ef
+0003fe 91ff
+0003ff 91cf
+000400 91df
+000401 9478
+000402 9508      function_end OnSecondAlarm
+                 ;========End OnSecondAlarm()================
+                 
+                 
+                 ;========function OnBrightnessRatioDown()===
+                 OnBrightnessRatioDown:
+000403 94f8
+000404 93df
+000405 93cf
+000406 93ff
+000407 93ef
+000408 2022
+000409 f049
+00040a 92af
+00040b 92bf
+00040c 92cf
+00040d 934f
+00040e 935f
+00040f 936f
+000410 937f
+000411 928f
+000412 929f
+000413 9423
+000414 9478      function_begin OnBrightnessRatioDown
+000415 e041      	ldi r20, 1
+000416 9340 010e 	sts mBrightnessRatioSet, r20
+000418 94f8
+000419 942a
+00041a f049
+00041b 909f
+00041c 908f
+00041d 917f
+00041e 916f
+00041f 915f
+000420 914f
+000421 90cf
+000422 90bf
+000423 90af
+000424 91ef
+000425 91ff
+000426 91cf
+000427 91df
+000428 9478
+000429 9508      function_end OnBrightnessRatioDown
+                 ;========End OnBrightnessRatioDown()========
+                 
+                 
+                 ;========function OnBrightnessRatioUp()=====
+                 OnBrightnessRatioUp:
+00042a 94f8
+00042b 93df
+00042c 93cf
+00042d 93ff
+00042e 93ef
+00042f 2022
+000430 f049
+000431 92af
+000432 92bf
+000433 92cf
+000434 934f
+000435 935f
+000436 936f
+000437 937f
+000438 928f
+000439 929f
+00043a 9423
+00043b 9478      function_begin OnBrightnessRatioUp
+00043c 2488      	clr r8
+00043d 9280 010e 	sts mBrightnessRatioSet, r8
+00043f 9090 0102 	lds r9, mBrightnessRatio
+                 	
+                 OnBrightnessRatioUp_waitForEEPROM:
+000441 99e1      	sbic EECR, EEWE
+000442 cffe      	rjmp OnBrightnessRatioUp_waitForEEPROM
+000443 94f8      	cli
+000444 e040      	ldi r20, high(eBrightnessRatio)
+000445 e05f      	ldi r21, low(eBrightnessRatio)
+000446 bb4f      	out EEARH, r20
+000447 bb5e      	out EEARL, r21
+000448 ba9d      	out EEDR, r9
+000449 9ae2      	sbi EECR, EEMWE
+00044a 9ae1      	sbi EECR, EEWE
+00044b 9478      	sei
+00044c 94f8
+00044d 942a
+00044e f049
+00044f 909f
+000450 908f
+000451 917f
+000452 916f
+000453 915f
+000454 914f
+000455 90cf
+000456 90bf
+000457 90af
+000458 91ef
+000459 91ff
+00045a 91cf
+00045b 91df
+00045c 9478
+00045d 9508      function_end OnBrightnessRatioUp
+                 ;========End OnBrightnessRatioUp()==========
+                 .include "output\output.asm"
+                 
+                 ;Converts digit to 7-segment code
+                 ;rRes contains segment bits (for writing to port)
+                 DigitToLED:
+00045e 94f8
+00045f 93df
+000460 93cf
+000461 93ff
+000462 93ef
+000463 2022
+000464 f049
+000465 92af
+000466 92bf
+000467 92cf
+000468 934f
+000469 935f
+00046a 936f
+00046b 937f
+00046c 928f
+00046d 929f
+00046e 9423
+00046f 9478      function_begin DigitToLED
+000470 2499      	clr r9
+000471 24bb      	clr r11
+000472 e4e2      	ldi ZL, low(DigitToLED_indexTable * 2)
+000473 e0f9      	ldi ZH, high(DigitToLED_indexTable * 2)
+000474 0c88      	lsl rPar1
+000475 0de8      	add ZL, rPar1
+000476 1df9      	adc ZH, r9
+000477 9085      	lpm r8, Z+
+000478 9094      	lpm r9, Z
+000479 01f4      	movw ZL:ZH, r8:r9
+00047a 9409      	ijmp
+                 
+                 DigitToLED_0:
+00047b e747      	ldi r20, 0x77
+00047c c011      	rjmp DigitToLED_return
+                 DigitToLED_1:
+00047d e244      	ldi r20, 0x24
+00047e c00f      	rjmp DigitToLED_return
+                 DigitToLED_2:
+00047f e54d      	ldi r20, 0x5d
+000480 c00d      	rjmp DigitToLED_return
+                 DigitToLED_3:
+000481 e64d      	ldi r20, 0x6d
+000482 c00b      	rjmp DigitToLED_return
+                 DigitToLED_4:
+000483 e24e      	ldi r20, 0x2e
+000484 c009      	rjmp DigitToLED_return
+                 DigitToLED_5:
+000485 e64b      	ldi r20, 0x6b
+000486 c007      	rjmp DigitToLED_return
+                 DigitToLED_6:
+000487 e74a      	ldi r20, 0x7a
+000488 c005      	rjmp DigitToLED_return
+                 DigitToLED_7:
+000489 e245      	ldi r20, 0x25
+00048a c003      	rjmp DigitToLED_return
+                 DigitToLED_8:
+00048b e74f      	ldi r20, 0x7f
+00048c c001      	rjmp DigitToLED_return
+                 DigitToLED_9:
+00048d e24f      	ldi r20, 0x2f
+                 
+                 DigitToLED_return:
+00048e 2e04      	mov rRes, r20
+00048f 94f8
+000490 942a
+000491 f049
+000492 909f
+000493 908f
+000494 917f
+000495 916f
+000496 915f
+000497 914f
+000498 90cf
+000499 90bf
+00049a 90af
+00049b 91ef
+00049c 91ff
+00049d 91cf
+00049e 91df
+00049f 9478
+0004a0 9508      function_end DigitToLED
+                 
+0004a1 047b
+0004a2 047d
+0004a3 047f
+0004a4 0481
+0004a5 0483
+0004a6 0485
+0004a7 0487
+0004a8 0489
+0004a9 048b
+0004aa 048d      DigitToLED_indexTable: .dw DigitToLED_0, DigitToLED_1, DigitToLED_2, DigitToLED_3, DigitToLED_4, DigitToLED_5, DigitToLED_6, DigitToLED_7, DigitToLED_8, DigitToLED_9
+                 ;=========End DigitToLED(digit)============
+                 
+                 
+                 ;========function GetTimeColonStatus()=========
+                 GetTimeColonStatus:
+0004ab 94f8
+0004ac 93df
+0004ad 93cf
+0004ae 93ff
+0004af 93ef
+0004b0 2022
+0004b1 f049
+0004b2 92af
+0004b3 92bf
+0004b4 92cf
+0004b5 934f
+0004b6 935f
+0004b7 936f
+0004b8 937f
+0004b9 928f
+0004ba 929f
+0004bb 9423
+0004bc 9478      function_begin GetTimeColonStatus
+0004bd 9140 006b 	lds r20, mRTCClockCount
+0004bf 2755      	clr r21
+                 
+0004c0 9160 010e 	lds r22, mBrightnessRatioSet ;Disable time colon when we are setting brightness ratio
+0004c2 2366      	tst r22
+0004c3 f491      	brne GetTimeColonStatus_default
+0004c4 314f      	cpi r20, 31
+0004c5 f030      	brlo GetTimeColonStatus_1
+0004c6 334e      	cpi r20, 62
+0004c7 f038      	brlo GetTimeColonStatus_2
+0004c8 354d      	cpi r20, 93
+0004c9 f040      	brlo GetTimeColonStatus_3
+0004ca 374c      	cpi r20, 124
+0004cb f048      	brlo GetTimeColonStatus_4
+                 
+                 GetTimeColonStatus_1:
+0004cc ea50      	ldi r21, 0xa0
+0004cd 940c 04d6 	jmp GetTimeColonStatus_default
+                 GetTimeColonStatus_2:
+0004cf e650      	ldi r21, 0x60
+0004d0 940c 04d6 	jmp GetTimeColonStatus_default
+                 GetTimeColonStatus_3:
+0004d2 e550      	ldi r21, 0x50
+0004d3 940c 04d6 	jmp GetTimeColonStatus_default
+                 GetTimeColonStatus_4:
+0004d5 e950      	ldi r21, 0x90
+                 GetTimeColonStatus_default:
+0004d6 2e05      	mov rRes, r21
+                 GetTimeColonStatus_return:
+0004d7 94f8
+0004d8 942a
+0004d9 f049
+0004da 909f
+0004db 908f
+0004dc 917f
+0004dd 916f
+0004de 915f
+0004df 914f
+0004e0 90cf
+0004e1 90bf
+0004e2 90af
+0004e3 91ef
+0004e4 91ff
+0004e5 91cf
+0004e6 91df
+0004e7 9478
+0004e8 9508      function_end GetTimeColonStatus
+                 ;========End GetTimeColonStatus()=================
+                 
+                 
+                 ;========function CalculateChannelsData()=========
+                 ;Converts time from time and date numbers and LEDs to raw data for display
+0004e9 0061
+0004ea 0062
+0004eb 0063
+0004ec 0064      CalculateChannelsData_indTable: .dw mHour, mMinute, mDay, mMonth
+                 CalculateChannelsData:
+0004ed 94f8
+0004ee 93df
+0004ef 93cf
+0004f0 93ff
+0004f1 93ef
+0004f2 2022
+0004f3 f049
+0004f4 92af
+0004f5 92bf
+0004f6 92cf
+0004f7 934f
+0004f8 935f
+0004f9 936f
+0004fa 937f
+0004fb 928f
+0004fc 929f
+0004fd 9423
+0004fe 9478      function_begin CalculateChannelsData
+0004ff 24cc      	clr r12
+000500 e6ce      	ldi YL, low(mRawDisplayData)
+000501 e0d0      	ldi YH, high(mRawDisplayData)
+000502 e6e1      	ldi ZL, low(mHour)
+000503 e0f0      	ldi ZH, high(mHour)
+000504 e05a      	ldi r21, 10 ;Uses for separating number to digits
+000505 e064      	ldi r22, 4 ;Time and date digits decoding cycle counter
+                 CalculateChannelsData_brightnessRatio:
+000506 9080 010e 	lds r8, mBrightnessRatioSet
+000508 2088      	tst r8
+000509 f101      	breq CalculateChannelsData_digits ;User is not set brightness ratio now
+00050a 9140 0102 	lds r20, mBrightnessRatio
+00050c 92c9      	st Y+, r12 ;First two digits will be disabled
+00050d 92c9      	st Y+, r12 ;
+00050e 94f8
+00050f 928f
+000510 929f
+000511 2e84
+000512 2e95
+000513 940e 0644
+000515 909f
+000516 908f      	call2 Divide, r20, r21
+000517 2c81      	mov r8, rRes2
+000518 94f8
+000519 928f
+00051a 2c80
+00051b 940e 045e
+00051d 908f      	call1 DigitToLED, rRes
+00051e 2d40      	mov r20, rRes
+00051f 6041      	sbr r20, 0x01 ;Enable dot between the third and the forth digits
+000520 9349      	st Y+, r20
+000521 94f8
+000522 928f
+000523 2c88
+000524 940e 045e
+000526 908f      	call1 DigitToLED, r8
+000527 9209      	st Y+, rRes
+000528 9634      	adiw ZL, 4 ;Skip time variables reading for next loop (mHour and mMinute)
+000529 e062      	ldi r22, 2 ;Count of cycles of setting channels data now is 2 (date only)
+                 	
+                 CalculateChannelsData_digits: ;Time and date digits
+00052a 9141      	ld r20, Z+
+                 CalculateChannelsData_digitsDivide:
+00052b 94f8
+00052c 928f
+00052d 929f
+00052e 2e84
+00052f 2e95
+000530 940e 0644
+000532 909f
+000533 908f      	call2 Divide, r20, r21
+000534 2d40      	mov r20, rRes
+000535 2d51      	mov r21, rRes2
+000536 94f8
+000537 928f
+000538 2e84
+000539 940e 045e
+00053b 908f      	call1 DigitToLED, r20
+00053c 9209      	st Y+, rRes
+00053d 94f8
+00053e 928f
+00053f 2e85
+000540 940e 045e
+000542 908f      	call1 DigitToLED, r21
+000543 9209      	st Y+, rRes
+000544 956a      	dec r22 ;Decrement counter
+000545 f721      	brne CalculateChannelsData_digits
+                 	
+                 CalculateChannelsData_dateDot: ;dot between alarm digits
+000546 9150 0073 	lds r21, mRawDisplayData + 5
+000548 6850      	ori r21, 0x80
+000549 9350 0073 	sts mRawDisplayData + 5, r21
+                 CalculateChannelsData_alarmDigits:
+00054b 9140 006a 	lds r20, mCurrentAlarm
+00054d 2344      	tst r20
+00054e f429      	brne CalculateChannelsData_alarmDigits1
+00054f 9349      	st Y+, r20 ;No numbers to output (alarm disabled)
+000550 9349      	st Y+, r20
+000551 9349      	st Y+, r20
+000552 9349      	st Y+, r20
+000553 c00f      	rjmp CalculateChannelsData_leds
+                 CalculateChannelsData_alarmDigits1:
+000554 3041      	cpi r20, 1
+000555 f429      	brne CalculateChannelsData_alarmDigits2
+000556 9140 0066 	lds r20, mAlarms
+000558 9150 0067 	lds r21, mAlarms + 1
+00055a cfd0      	rjmp CalculateChannelsData_digitsDivide
+                 CalculateChannelsData_alarmDigits2:
+00055b 3042      	cpi r20, 2
+00055c f431      	brne CalculateChannelsData_leds
+00055d 9140 0068 	lds r20, mAlarms + 2
+00055f 9150 0069 	lds r21, mAlarms + 3
+000561 cfc9      	rjmp CalculateChannelsData_digitsDivide
+                 
+000562 9099      	ld r9, Y+ ;dummy operation for Y pointer increment (we are not set time colon status here)
+                 
+                 CalculateChannelsData_leds:
+000563 2488      	clr r8
+000564 2499      	clr r9
+000565 24aa      	clr r10
+000566 24bb      	clr r11
+                 CalculateChannelsData_leds_dayOfWeek:
+000567 9150 0065 	lds r21, mDayOfWeek
+000569 9483      	inc r8
+00056a 9487      	ror r8
+                 CalculateChannelsData_leds_dayOfWeek1:
+00056b 9487      	ror r8
+00056c 955a      	dec r21
+00056d 9408      	sec
+00056e f7e1      	brne CalculateChannelsData_leds_dayOfWeek1
+                 CalculateChannelsData_leds_alarmColon:
+00056f 2344      	tst r20
+000570 f049      	breq CalculateChannelsData_leds_radioButtonsIndicators
+000571 e051      	ldi r21, 0x01
+000572 2a85      	or r8, r21
+                 CalculateChannelsData_leds_alarmButtonsIndicators:
+000573 2344      	tst r20
+000574 f029      	breq CalculateChannelsData_leds_radioButtonsIndicators
+000575 9408      	sec
+000576 94a7      	ror r10
+000577 3042      	cpi r20, 2
+000578 f409      	brne CalculateChannelsData_leds_radioButtonsIndicators
+000579 94a6      	lsr r10
+                 CalculateChannelsData_leds_radioButtonsIndicators:
+00057a 0000      	nop
+                 CalculateChannelsData_leds_store:
+00057b 9289      	st Y+, r8
+00057c 92a9      	st Y+, r10
+00057d 92b9      	st Y+, r11
+                 CalculateChannelsData_return:
+00057e 94f8
+00057f 942a
+000580 f049
+000581 909f
+000582 908f
+000583 917f
+000584 916f
+000585 915f
+000586 914f
+000587 90cf
+000588 90bf
+000589 90af
+00058a 91ef
+00058b 91ff
+00058c 91cf
+00058d 91df
+00058e 9478
+00058f 9508      function_end CalculateChannelsData
+                 ;========End CalculateChannelsData()==============
+                 .include "output\brightness.asm"
+                 
+                 SetDayOfWeekBrightness:
+000590 94f8
+000591 93df
+000592 93cf
+000593 93ff
+000594 93ef
+000595 2022
+000596 f049
+000597 92af
+000598 92bf
+000599 92cf
+00059a 934f
+00059b 935f
+00059c 936f
+00059d 937f
+00059e 928f
+00059f 929f
+0005a0 9423
+0005a1 9478      function_begin SetDayOfWeekBrightness
+0005a2 9080 0065 	lds r8, mDayOfWeek
+0005a4 e049      	ldi r20, 0x09 ;Low brightness value
+0005a5 e05f      	ldi r21, 0x0f ;High brightness value
+                 
+0005a6 e0f0      	ldi ZH, high(mElementBrightness + 100)
+0005a7 eee3      	ldi ZL, low(mElementBrightness + 100)
+                 SetDayOfWeekBrightness_low:
+0005a8 948a      	dec r8
+0005a9 f011      	breq SetDayOfWeekBrightness_high
+0005aa 9341      	st Z+, r20
+0005ab cffc      	rjmp SetDayOfWeekBrightness_low
+                 
+                 SetDayOfWeekBrightness_high:
+0005ac 9351      	st Z+, r21
+0005ad 94f8
+0005ae 942a
+0005af f049
+0005b0 909f
+0005b1 908f
+0005b2 917f
+0005b3 916f
+0005b4 915f
+0005b5 914f
+0005b6 90cf
+0005b7 90bf
+0005b8 90af
+0005b9 91ef
+0005ba 91ff
+0005bb 91cf
+0005bc 91df
+0005bd 9478
+0005be 9508      function_end SetDayOfWeekBrightness
+                 ;========End SetDayOfWeekBrightness()=============
+                 
+                 
+                 ;========function SetSettingsBrightness()=========
+                 SetSettingsBrightness:
+0005bf 94f8
+0005c0 93df
+0005c1 93cf
+0005c2 93ff
+0005c3 93ef
+0005c4 2022
+0005c5 f049
+0005c6 92af
+0005c7 92bf
+0005c8 92cf
+0005c9 934f
+0005ca 935f
+0005cb 936f
+0005cc 937f
+0005cd 928f
+0005ce 929f
+0005cf 9423
+0005d0 9478      function_begin SetSettingsBrightness
+0005d1 9080 010b 	lds r8, mCurrentTimePart
+0005d3 2755      	clr r21
+0005d4 2088      	tst r8
+0005d5 f011      	breq SetSettingsBrightness_allHigh
+                 
+                 ;Set the same brightness of all digits and leds
+                 SetSettingsBrightness_allLow:
+0005d6 e049      	ldi r20, 0x09
+0005d7 c002      	rjmp SetSettingsBrightness_digits
+                 SetSettingsBrightness_allHigh:
+0005d8 e04f      	ldi r20, 0x0f
+0005d9 c034      	rjmp SetSettingsBrightness_return
+                 SetSettingsBrightness_digits:
+0005da e0f0      	ldi ZH, high(mElementBrightness)
+0005db e7ef      	ldi ZL, low(mElementBrightness)
+0005dc 9341      	st Z+, r20
+0005dd 9553      	inc r21
+0005de 3650      	cpi r21, 96
+0005df f408      	brsh SetSettingsBrightness_leds
+0005e0 cff9      	rjmp SetSettingsBrightness_digits
+                 SetSettingsBrightness_leds:
+0005e1 e0f0      	ldi ZH, high(mElementBrightness)
+0005e2 e7ef      	ldi ZL, low(mElementBrightness)
+0005e3 9341      	st Z+, r20
+0005e4 9553      	inc r21
+0005e5 3657      	cpi r21, 103
+0005e6 f408      	brsh SetSettingsBrightness_time
+0005e7 cff9      	rjmp SetSettingsBrightness_leds
+                 
+                 SetSettingsBrightness_time:
+0005e8 e04f      	ldi r20, 0x0f
+                 
+0005e9 948a      	dec r8
+0005ea f449      	brne SetSettingsBrightness_date
+0005eb 9340 007f 	sts mElementBrightness, r20
+0005ed 9340 0080 	sts mElementBrightness + 1, r20
+0005ef 9340 0081 	sts mElementBrightness + 2, r20
+0005f1 9340 0082 	sts mElementBrightness + 3, r20
+0005f3 c01a      	rjmp SetSettingsBrightness_return
+                 SetSettingsBrightness_date:
+0005f4 948a      	dec r8
+0005f5 f449      	brne SetSettingsBrightness_dayOfWeek
+0005f6 9340 0083 	sts mElementBrightness + 4, r20
+0005f8 9340 0084 	sts mElementBrightness + 5, r20
+0005fa 9340 0085 	sts mElementBrightness + 6, r20
+0005fc 9340 0086 	sts mElementBrightness + 7, r20
+0005fe c00f      	rjmp SetSettingsBrightness_return
+                 SetSettingsBrightness_dayOfWeek:
+0005ff 948a      	dec r8
+000600 f419      	brne SetSettingsBrightness_alarm
+000601 940e 0590 	call SetDayOfWeekBrightness
+000603 c00a      	rjmp SetSettingsBrightness_return
+                 SetSettingsBrightness_alarm:
+000604 948a      	dec r8
+000605 f441      	brne SetSettingsBrightness_return
+000606 9340 0087 	sts mElementBrightness + 8, r20
+000608 9340 0088 	sts mElementBrightness + 9, r20
+00060a 9340 0089 	sts mElementBrightness + 10, r20
+00060c 9340 008a 	sts mElementBrightness + 11, r20
+                 	
+                 SetSettingsBrightness_return:
+00060e 94f8
+00060f 942a
+000610 f049
+000611 909f
+000612 908f
+000613 917f
+000614 916f
+000615 915f
+000616 914f
+000617 90cf
+000618 90bf
+000619 90af
+00061a 91ef
+00061b 91ff
+00061c 91cf
+00061d 91df
+00061e 9478
+00061f 9508      function_end SetSettingsBrightness
+                 ;========End SetSettingsBrightness()==============
+                 
+                 
+                 ;========function AdjustCommonBrightness()========
+                 ;This function retrieves value from ADC channel (fotodiode) and
+                 ;adjust common digits and leds brightness depending on room's light
+                 AdjustCommonBrightness:
+000620 94f8
+000621 93df
+000622 93cf
+000623 93ff
+000624 93ef
+000625 2022
+000626 f049
+000627 92af
+000628 92bf
+000629 92cf
+00062a 934f
+00062b 935f
+00062c 936f
+00062d 937f
+00062e 928f
+00062f 929f
+000630 9423
+000631 9478      function_begin AdjustCommonBrightness
+                 	
+000632 94f8
+000633 942a
+000634 f049
+000635 909f
+000636 908f
+000637 917f
+000638 916f
+000639 915f
+00063a 914f
+00063b 90cf
+00063c 90bf
+00063d 90af
+00063e 91ef
+00063f 91ff
+000640 91cf
+000641 91df
+000642 9478
+000643 9508      function_end AdjustCommonBrightness
+                 ;========End AdjustCommonBrightness()=============
+                 .include "common.asm"
+                 
+                 ;Multiplies one register to another with remainder
+                 ;Returns result in rRes and remainder in rRes2
+                 Divide:
+000644 94f8
+000645 93df
+000646 93cf
+000647 93ff
+000648 93ef
+000649 2022
+00064a f049
+00064b 92af
+00064c 92bf
+00064d 92cf
+00064e 934f
+00064f 935f
+000650 936f
+000651 937f
+000652 928f
+000653 929f
+000654 9423
+000655 9478      function_begin Divide
+                 	;r8 - first parameter
+                 	;r9 - second parameter
+                 
+000656 24cc      	clr r12
+000657 2400      	clr rRes
+000658 149c      	cp rPar2, r12
+000659 f079      	breq Divide_return ;division by zero
+                 
+00065a 2cb9      	mov r11, rPar2
+                 
+                 Divide_shiftLeft:
+00065b fcb7      	sbrc r11, 7
+00065c c002      	rjmp Divide_shiftLeftEnd
+00065d 0cbb      	lsl r11
+00065e cffc      	rjmp Divide_shiftLeft
+                 Divide_shiftLeftEnd:
+00065f 2c18      	mov rRes2, rPar1
+                 
+                 Divide_iteration:
+000660 0c00      	lsl rRes
+000661 181b      	sub rRes2, r11
+000662 f010      	brlo Divide_minus
+                 Divide_plus:
+000663 9403      	inc rRes
+000664 c001      	rjmp Divide_d2Shift
+                 Divide_minus:
+000665 0c1b      	add rRes2, r11
+                 Divide_d2Shift:
+000666 94b6      	lsr r11
+000667 14b9      	cp r11, rPar2
+000668 f7b8      	brsh Divide_iteration
+                 
+                 Divide_return:
+000669 140c      	cp rRes, r12
+00066a 94f8
+00066b 942a
+00066c f049
+00066d 909f
+00066e 908f
+00066f 917f
+000670 916f
+000671 915f
+000672 914f
+000673 90cf
+000674 90bf
+000675 90af
+000676 91ef
+000677 91ff
+000678 91cf
+000679 91df
+00067a 9478
+00067b 9508      function_end Divide
+                 ;=========End Divide(d1, d2)======================
+                 
+                 
+                 ;========function AddWithThreshold(val, addVal, threshold)====
+                 ;Increases val with addVal and if it would overflow threshold then resets
+                 ;it with remainder. If after adding result would negative (if addVal is negative)
+                 ;then set it to the threshold value minus remainder
+                 ;This function accepts unsigned values except addVal
+                 ;rRes contains new value, rRes2 contains integer part of quotient obtained by 
+                 ;dividing val by the threshold
+                 
+                 ;For example val=1, addVal=156, threshold=50
+                 ;There will be: rRes=7, rRes2=3
+                 ;If there are: val=1, addVal=-176, threshold=20
+                 ;There will be: rRes=5, rRes2=-8=0b11111000
+                 AddWithThreshold:
+00067c 94f8
+00067d 93df
+00067e 93cf
+00067f 93ff
+000680 93ef
+000681 2022
+000682 f049
+000683 92af
+000684 92bf
+000685 92cf
+000686 934f
+000687 935f
+000688 936f
+000689 937f
+00068a 928f
+00068b 929f
+00068c 9423
+00068d 9478      function_begin AddWithThreshold
+00068e 24cc      	clr r12
+00068f 0c89      	add rPar1, rPar2
+000690 f02c      	brlt AddWithThreshold_negative ;Result is negative number
+                 
+                 ;Decrease result to be less than threshold
+                 ;Divide operation takes more clock cycles than this loop
+                 AddWithThreshold_positive:
+000691 148a      	cp rPar1, rPar3
+000692 f038      	brlo AddWithThreshold_return
+000693 94c3      	inc r12
+000694 188a      	sub rPar1, rPar3
+000695 cffb      	rjmp AddWithThreshold_positive
+                 	
+                 ;Result is negative number
+                 ;Increase result to make number positive and less than threshold
+                 AddWithThreshold_negative:
+000696 94ca      	dec r12
+000697 0c8a      	add rPar1, rPar3
+000698 f3ea      	brmi AddWithThreshold_negative
+000699 c000      	rjmp AddWithThreshold_return
+                 	
+                 AddWithThreshold_return:
+00069a 2c08      	mov rRes, rPar1
+00069b 2c1c      	mov rRes2, r12
+00069c 94f8
+00069d 942a
+00069e f049
+00069f 909f
+0006a0 908f
+0006a1 917f
+0006a2 916f
+0006a3 915f
+0006a4 914f
+0006a5 90cf
+0006a6 90bf
+0006a7 90af
+0006a8 91ef
+0006a9 91ff
+0006aa 91cf
+0006ab 91df
+0006ac 9478
+0006ad 9508      function_end AddWithThreshold
+                 ;========End AddWithThreshold(val, addVal, threshold)=========
+                 .include "time.asm"
+                 
+                 ;Checks which alarm is matched on the moment
+                 GetMatchAlarm:
+0006ae 94f8
+0006af 93df
+0006b0 93cf
+0006b1 93ff
+0006b2 93ef
+0006b3 2022
+0006b4 f049
+0006b5 92af
+0006b6 92bf
+0006b7 92cf
+0006b8 934f
+0006b9 935f
+0006ba 936f
+0006bb 937f
+0006bc 928f
+0006bd 929f
+0006be 9423
+0006bf 9478      function_begin GetMatchAlarm
+0006c0 9080 0061 	lds r8, mHour
+0006c2 9090 0062 	lds r9, mMinute
+0006c4 9140 006a 	lds r20, mCurrentAlarm
+0006c6 3040      	cpi r20, 0
+0006c7 f0b9      	breq GetMatchAlarm_return
+                 GetMatchAlarm_1:
+0006c8 3041      	cpi r20, 1
+0006c9 f451      	brne GetMatchAlarm_2
+0006ca 90a0 0066 	lds r10, mAlarms ;Hour
+0006cc 90b0 0067 	lds r11, mAlarms + 1 ;Minutes
+0006ce 14a8      	cp r10, r8
+0006cf f479      	brne GetMatchAlarm_return
+0006d0 14b9      	cp r11, r9
+0006d1 f469      	brne GetMatchAlarm_return
+0006d2 2e04      	mov rRes, r20
+0006d3 c00b      	rjmp GetMatchAlarm_return
+                 GetMatchAlarm_2:
+0006d4 3042      	cpi r20, 2
+0006d5 f449      	brne GetMatchAlarm_return
+0006d6 90a0 0068 	lds r10, mAlarms + 2 ;Hour
+0006d8 90b0 0069 	lds r11, mAlarms + 3 ;Minutes
+0006da 14a8      	cp r10, r8
+0006db f419      	brne GetMatchAlarm_return
+0006dc 14b9      	cp r11, r9
+0006dd f409      	brne GetMatchAlarm_return
+0006de 2e04      	mov rRes, r20
+                 GetMatchAlarm_return:
+0006df 94f8
+0006e0 942a
+0006e1 f049
+0006e2 909f
+0006e3 908f
+0006e4 917f
+0006e5 916f
+0006e6 915f
+0006e7 914f
+0006e8 90cf
+0006e9 90bf
+0006ea 90af
+0006eb 91ef
+0006ec 91ff
+0006ed 91cf
+0006ee 91df
+0006ef 9478
+0006f0 9508      function_end GetMatchAlarm
+                 ;========End AlarmCheck()=======================
+                 
+                 
+                 ;========complex function IncreaseTimeDate========
+                 ;It is complex function with multiple entry points
+                 ;There are:
+                 ;function IncreaseSeconds(val)
+                 ;function IncreaseMinutes(val)
+                 ;function IncreaseHours(val)
+                 ;function IncreaseDaysOfWeek(val)
+                 ;function IncreaseDays(val)
+                 ;function IncreaseMonths(val)
+                 ;Adds to changing value addKind value, Add kind can be two's complement value to decrease addKind value
+                 ;
+                 ;========function IncreaseSeconds(val)=============
+                 IncreaseSeconds:
+0006f1 94f8
+0006f2 93df
+0006f3 93cf
+0006f4 93ff
+0006f5 93ef
+0006f6 2022
+0006f7 f049
+0006f8 92af
+0006f9 92bf
+0006fa 92cf
+0006fb 934f
+0006fc 935f
+0006fd 936f
+0006fe 937f
+0006ff 928f
+000700 929f
+000701 9423
+000702 9478      function_begin IncreaseSeconds
+000703 2088      	tst rPar1
+000704 f1d1      	breq IncreaseTimeDate_goReturn1
+000705 9140 0060 	lds r20, mSecond
+000707 e35b      	ldi r21, 59
+000708 94f8
+000709 928f
+00070a 929f
+00070b 92af
+00070c 2e84
+00070d 2c98
+00070e 2ea5
+00070f 940e 067c
+000711 90af
+000712 909f
+000713 908f      	call3 AddWithThreshold, r20, rPar1, r21
+000714 9200 0060 	sts mSecond, rRes
+000716 2c81      	mov rPar1, rRes2
+000717 c012      	rjmp IncreaseMinutes1 ;Skip function_begin macros
+                 	
+                 ;========function IncreaseMinutes(val)=============
+                 IncreaseMinutes:
+000718 94f8
+000719 93df
+00071a 93cf
+00071b 93ff
+00071c 93ef
+00071d 2022
+00071e f049
+00071f 92af
+000720 92bf
+000721 92cf
+000722 934f
+000723 935f
+000724 936f
+000725 937f
+000726 928f
+000727 929f
+000728 9423
+000729 9478      function_begin IncreaseMinutes
+                 IncreaseMinutes1:
+00072a 2088      	tst rPar1
+00072b f099      	breq IncreaseTimeDate_goReturn1
+00072c 9140 0062 	lds r20, mMinute
+00072e e35b      	ldi r21, 59
+00072f 94f8
+000730 928f
+000731 929f
+000732 92af
+000733 2e84
+000734 2c98
+000735 2ea5
+000736 940e 067c
+000738 90af
+000739 909f
+00073a 908f      	call3 AddWithThreshold, r20, rPar1, r21
+00073b 9200 0062 	sts mMinute, rRes
+00073d 2c81      	mov rPar1, rRes2
+00073e c014      	rjmp IncreaseHours1 ;Skip function_begin macros
+                 	
+                 IncreaseTimeDate_goReturn1:
+00073f 940c 07ee 	jmp IncreaseTimeDate_return	
+                 ;========function IncreaseHours(val)=============
+                 IncreaseHours:
+000741 94f8
+000742 93df
+000743 93cf
+000744 93ff
+000745 93ef
+000746 2022
+000747 f049
+000748 92af
+000749 92bf
+00074a 92cf
+00074b 934f
+00074c 935f
+00074d 936f
+00074e 937f
+00074f 928f
+000750 929f
+000751 9423
+000752 9478      function_begin IncreaseHours
+                 IncreaseHours1:
+000753 2088      	tst rPar1
+000754 f351      	breq IncreaseTimeDate_goReturn1
+000755 9140 0061 	lds r20, mHour
+000757 e157      	ldi r21, 23
+000758 94f8
+000759 928f
+00075a 929f
+00075b 92af
+00075c 2e84
+00075d 2c98
+00075e 2ea5
+00075f 940e 067c
+000761 90af
+000762 909f
+000763 908f      	call3 AddWithThreshold, r20, rPar1, r21
+000764 9200 0061 	sts mHour, rRes
+000766 2c81      	mov rPar1, rRes2
+000767 24bb      	clr r11
+000768 c014      	rjmp IncreaseDaysOfWeek1 ;Skip function_begin macros
+                 	
+                 ;========function IncreaseDaysOfWeek(val)=============
+                 IncreaseDaysOfWeek:
+000769 94f8
+00076a 93df
+00076b 93cf
+00076c 93ff
+00076d 93ef
+00076e 2022
+00076f f049
+000770 92af
+000771 92bf
+000772 92cf
+000773 934f
+000774 935f
+000775 936f
+000776 937f
+000777 928f
+000778 929f
+000779 9423
+00077a 9478      function_begin IncreaseDaysOfWeek
+00077b 24bb      	clr r11
+00077c 94b3      	inc r11
+                 IncreaseDaysOfWeek1:
+00077d 2088      	tst rPar1
+00077e f201      	breq IncreaseTimeDate_goReturn1
+00077f 9140 0065 	lds r20, mDayOfWeek
+000781 e057      	ldi r21, 7
+000782 94f8
+000783 928f
+000784 929f
+000785 92af
+000786 2e84
+000787 2c98
+000788 2ea5
+000789 940e 067c
+00078b 90af
+00078c 909f
+00078d 908f      	call3 AddWithThreshold, r20, rPar1, r21
+00078e 9200 0065 	sts mDayOfWeek, rRes
+000790 20bb      	tst r11
+000791 f5a9      	brne IncreaseTimeDate_goReturn2 ;If we call this function by other code not by IncreaseAlarmHours
+                 		;then exit because we should not to change day number in this case
+000792 c012      	rjmp IncreaseDays1 ;Skip function_begin macros
+                 
+                 ;========function IncreaseDays(val)=============
+                 IncreaseDays:
+000793 94f8
+000794 93df
+000795 93cf
+000796 93ff
+000797 93ef
+000798 2022
+000799 f049
+00079a 92af
+00079b 92bf
+00079c 92cf
+00079d 934f
+00079e 935f
+00079f 936f
+0007a0 937f
+0007a1 928f
+0007a2 929f
+0007a3 9423
+0007a4 9478      function_begin IncreaseDays
+                 IncreaseDays1:
+0007a5 2088      	tst rPar1
+0007a6 f101      	breq IncreaseTimeDate_goReturn2
+0007a7 24cc      	clr r12
+0007a8 9140 0063 	lds r20, mDay
+0007aa 90b0 0064 	lds r11, mMonth
+0007ac 94ba      	dec r11 ;Month should start from zero
+                 IncreaseDays_eeprom:
+0007ad 99e1      	sbic EECR, EEWE
+0007ae cffe      	rjmp IncreaseDays_eeprom
+0007af e060      	ldi r22, low(eDaysInMonths)
+0007b0 e070      	ldi r23, high(eDaysInMonths)
+0007b1 0d6b      	add r22, r11
+0007b2 1d7c      	adc r23, r12
+0007b3 bb6e      	out EEARL, r22
+0007b4 bb7f      	out EEARH, r23
+0007b5 9ae0      	sbi EECR, EERE
+0007b6 b35d      	in r21, EEDR
+0007b7 94f8
+0007b8 928f
+0007b9 929f
+0007ba 92af
+0007bb 2e84
+0007bc 2c98
+0007bd 2ea5
+0007be 940e 067c
+0007c0 90af
+0007c1 909f
+0007c2 908f      	call3 AddWithThreshold, r20, rPar1, r21
+0007c3 9200 0063 	sts mDay, rRes
+0007c5 2c81      	mov rPar1, rRes2
+0007c6 c014      	rjmp IncreaseMonths1 ;Skip function_begin macros
+                 
+                 IncreaseTimeDate_goReturn2:
+0007c7 940c 07ee 	jmp IncreaseTimeDate_return	
+                 ;========function IncreaseMonths(val)=============
+                 IncreaseMonths:
+0007c9 94f8
+0007ca 93df
+0007cb 93cf
+0007cc 93ff
+0007cd 93ef
+0007ce 2022
+0007cf f049
+0007d0 92af
+0007d1 92bf
+0007d2 92cf
+0007d3 934f
+0007d4 935f
+0007d5 936f
+0007d6 937f
+0007d7 928f
+0007d8 929f
+0007d9 9423
+0007da 9478      function_begin IncreaseMonths
+                 IncreaseMonths1:
+0007db 2088      	tst rPar1
+0007dc f089      	breq IncreaseTimeDate_return
+0007dd 9140 0064 	lds r20, mMonth
+0007df e05c      	ldi r21, 12
+0007e0 94f8
+0007e1 928f
+0007e2 929f
+0007e3 92af
+0007e4 2e84
+0007e5 2c98
+0007e6 2ea5
+0007e7 940e 067c
+0007e9 90af
+0007ea 909f
+0007eb 908f      	call3 AddWithThreshold, r20, rPar1, r21
+0007ec 9200 0064 	sts mMonth, rRes
+                 IncreaseTimeDate_return:
+0007ee 94f8
+0007ef 942a
+0007f0 f049
+0007f1 909f
+0007f2 908f
+0007f3 917f
+0007f4 916f
+0007f5 915f
+0007f6 914f
+0007f7 90cf
+0007f8 90bf
+0007f9 90af
+0007fa 91ef
+0007fb 91ff
+0007fc 91cf
+0007fd 91df
+0007fe 9478
+0007ff 9508      function_end IncreaseTimeDate
+                 ;========End IncreaseTimeDate======================
+                 
+                 
+                 ;========complex function IncreaseAlarmTime========
+                 ;It is complex function with multiple entry points
+                 ;Increases value of alarm time. You can put to the addVal two's complement value (negative value)
+                 ;addVal - what we should to add to the time
+                 ;alarmNum - value starting from 1 that points to alarm number
+                 ;Do NOT call IncreaseAlarmTime because this label for inner use
+                 IncreaseAlarmTime:
+000800 24cc      	clr r12
+000801 949a      	dec rPar2
+000802 0c99      	lsl rPar2
+000803 e6e6      	ldi ZL, low(mAlarms)
+000804 e0f0      	ldi ZH, high(mAlarms)
+000805 0de9      	add ZL, rPar2
+000806 1dfc      	adc ZH, r12
+000807 9141      	ld r20, Z+ ;Hours
+000808 9151      	ld r21, Z+ ;Minutes
+000809 9508      	ret
+                 	
+                 ;========function IncreaseAlarmMinutes(addVal, alarmNum)===
+                 IncreaseAlarmMinutes:
+00080a 94f8
+00080b 93df
+00080c 93cf
+00080d 93ff
+00080e 93ef
+00080f 2022
+000810 f049
+000811 92af
+000812 92bf
+000813 92cf
+000814 934f
+000815 935f
+000816 936f
+000817 937f
+000818 928f
+000819 929f
+00081a 9423
+00081b 9478      function_begin IncreaseAlarmMinutes
+00081c 2088      	tst rPar1
+00081d f1b9      	breq IncreaseAlarmTime_return
+00081e 940e 0800 	call IncreaseAlarmTime
+000820 e36b      	ldi r22, 59
+000821 94f8
+000822 928f
+000823 929f
+000824 92af
+000825 2e85
+000826 2c98
+000827 2ea6
+000828 940e 067c
+00082a 90af
+00082b 909f
+00082c 908f      	call3 AddWithThreshold, r21, rPar1, r22
+00082d 9202      	st -Z, rRes
+00082e 2c81      	mov rPar1, rRes2
+00082f c017      	rjmp IncreaseAlarmHours1
+                 
+                 ;========function IncreaseAlarmHours(addVal, alarmNum)===
+                 IncreaseAlarmHours:
+000830 94f8
+000831 93df
+000832 93cf
+000833 93ff
+000834 93ef
+000835 2022
+000836 f049
+000837 92af
+000838 92bf
+000839 92cf
+00083a 934f
+00083b 935f
+00083c 936f
+00083d 937f
+00083e 928f
+00083f 929f
+000840 9423
+000841 9478      function_begin IncreaseAlarmHours
+000842 2088      	tst rPar1
+000843 f089      	breq IncreaseAlarmTime_return
+000844 940e 0800 	call IncreaseAlarmTime
+000846 9352      	st -Z, r21 ;Dummy operation just for decrement Z pointer
+                 IncreaseAlarmHours1:
+000847 e167      	ldi r22, 23
+000848 94f8
+000849 928f
+00084a 929f
+00084b 92af
+00084c 2e84
+00084d 2c98
+00084e 2ea6
+00084f 940e 067c
+000851 90af
+000852 909f
+000853 908f      	call3 AddWithThreshold, r20, rPar1, r22
+000854 9202      	st -Z, rRes
+                 	
+                 IncreaseAlarmTime_return:
+000855 94f8
+000856 942a
+000857 f049
+000858 909f
+000859 908f
+00085a 917f
+00085b 916f
+00085c 915f
+00085d 914f
+00085e 90cf
+00085f 90bf
+000860 90af
+000861 91ef
+000862 91ff
+000863 91cf
+000864 91df
+000865 9478
+000866 9508      function_end IncreaseAlarmTime
+                 ;========End IncreaseAlarmTime(addVal)=============
+                 
+                 
+                 ;=======function IsLeapYear()================
+                 ;determines whether current year is leap year based on day of week and date
+                 ;current date must be 28 of February
+                 ;rRes contains non-zero value if it is leap year
+                 IsLeapYear:
+000867 94f8
+000868 93df
+000869 93cf
+00086a 93ff
+00086b 93ef
+00086c 2022
+00086d f049
+00086e 92af
+00086f 92bf
+000870 92cf
+000871 934f
+000872 935f
+000873 936f
+000874 937f
+000875 928f
+000876 929f
+000877 9423
+000878 9478      function_begin IsLeapYear
+000879 24cc      	clr r12
+00087a 9080 0065 	lds r8, mDayOfWeek
+                 IsLeapYear_loadAddress:
+00087c e04c      	ldi r20, low(eDaysOfWeekInLeapYears)
+00087d e050      	ldi r21, high(eDaysOfWeekInLeapYears)
+                 IsLeapYear_waitForEEPROMFree:
+00087e 99e1      	sbic EECR, EEWE
+00087f cffe      	rjmp IsLeapYear_waitForEEPROMFree
+000880 bb4e      	out EEARL, r20
+000881 bb5f      	out EEARH, r21
+000882 9ae0      	sbi EECR, EERE
+000883 b36d      	in r22, EEDR
+000884 9553      	inc r21
+000885 1d4c      	adc r20, r12
+000886 1568      	cp r22, r8
+000887 f7a1      	brne IsLeapYear_loadAddress
+000888 3060      	cpi r22, 0
+000889 f791      	brne IsLeapYear_loadAddress
+                 IsLeapYear_return:
+00088a 2e06      	mov rRes, r22
+00088b 94f8
+00088c 942a
+00088d f049
+00088e 909f
+00088f 908f
+000890 917f
+000891 916f
+000892 915f
+000893 914f
+000894 90cf
+000895 90bf
+000896 90af
+000897 91ef
+000898 91ff
+000899 91cf
+00089a 91df
+00089b 9478
+00089c 9508      function_end IsLeapYear
+                 ;=======End IsLeapYear()=====================
+                 
+                 ;------Main cycle-------------------------------
+                 RESET:
+                 .include "init.asm" ;Initialization
+                 
+                 	;Clear RAM (0x00)
+00089d e6e0      	ldi ZL, low(SRAM_START)
+00089e e0f0      	ldi ZH, high(SRAM_START)
+00089f 2700      	clr rTmp
+                 flush:
+0008a0 9301      	st 	Z+,rTmp
+0008a1 30f8      	cpi	ZH,High(RAMEND+1)
+0008a2 f7e9      	brne flush
+0008a3 36e0      	cpi	ZL,Low(RAMEND+1)
+0008a4 f7d9      	brne flush
+0008a5 27ee      	clr ZL
+0008a6 27ff      	clr ZH
+                 
+                 	;Clear registers
+                 flushRegs:
+0008a7 9301      	st Z+, rTmp
+0008a8 31ee      	cpi ZL, 30
+0008a9 f7e9      	brne flushRegs
+0008aa 27ee      	clr ZL
+                 
+                 
+                 	;Initialize stack
+0008ab e008      	ldi rTmp,HIGH(RAMEND)
+0008ac bf0e      	out SPH,rTmp
+0008ad e50f      	ldi rTmp,LOW(RAMEND)
+0008ae bf0d      	out SPL,rTmp
+                 
+                 
+                 	;Initialize time (01/01/2011 00:00:00)
+0008af e000      	ldi rTmp, 0
+0008b0 9300 0061 	sts mHour, rTmp
+0008b2 9300 0062 	sts mMinute, rTmp
+0008b4 9300 0060 	sts mSecond, rTmp
+0008b6 e001      	ldi rTmp, 1
+0008b7 9300 0063 	sts mDay, rTmp
+0008b9 9300 0064 	sts mMonth, rTmp
+0008bb 9300 0065 	sts mDayOfWeek, rTmp
+                 
+                 	;Initialize ports
+                 	;
+                 	;PORTB and PORTD are digits segments (except pin 3)
+0008bd ef07      	ldi rTmp, 0xf7
+0008be bb07      	out DDRB, rTmp
+                 
+                 	;PORTC is digits segments (dots)
+0008bf ec00      	ldi rTmp, 0xc0
+0008c0 bb04      	out DDRC, rTmp
+                 
+                 	;PORTA is digits kathodes and foto sensor
+0008c1 ef06      	ldi rTmp, 0xf6
+0008c2 bb0a      	out DDRA, rTmp
+0008c3 e006      	ldi rTmp, 0x06 ;PL and CP are high
+0008c4 bb0b      	out PORTA, rTmp
+                 
+                 	;ADC initialization
+0008c5 e808      	ldi rTmp, (1<<ADEN) | (1<<ADIE)
+0008c6 b906      	out ADCSRA, rTmp
+0008c7 e403      	ldi rTmp, (1<<REFS0) | (1<<MUX1) | (1<<MUX0) ;ADC3 with Vcc reference voltage
+0008c8 b907      	out ADMUX, rTmp
+                 
+                 
+                 	;Initialize real-time counter
+                 	;
+                 	;triggers 125 times per second
+0008c9 ef0a      	ldi rTmp, 250
+0008ca bd03      	out OCR2, rTmp
+                 
+0008cb b709      	in rTmp, TIMSK
+0008cc 6800      	ori rTmp, (1<<OCIE2)
+0008cd bf09      	out TIMSK, rTmp
+                 
+0008ce b700      	in rTmp, SFIOR
+0008cf 6002      	ori rTmp, (1<<PSR2)
+0008d0 bf00      	out SFIOR, rTmp
+                 
+0008d1 e000      	ldi rTmp, 0
+0008d2 bd04      	out TCNT2, rTmp
+                 
+                 	;1/256 prescaler, CTC mode
+0008d3 e00e      	ldi rTmp, (1<<WGM21) | (1<<CS21) | (1<<CS22)
+0008d4 bd05      	out TCCR2, rTmp
+                 
+                 
+                 	;Initialize display timer
+0008d5 e70f      	ldi rTmp, 0x7f ;Triggers about 7900 times per second (about 13 microseconds)
+0008d6 bf0c      	out OCR0, rTmp
+                 
+0008d7 b709      	in rTmp, TIMSK
+0008d8 6002      	ori rTmp, (1<<OCIE0)
+0008d9 bf09      	out TIMSK, rTmp
+                 
+0008da b700      	in rTmp, SFIOR
+0008db 6001      	ori rTmp, (1<<PSR10)
+0008dc bf00      	out SFIOR, rTmp
+                 
+0008dd e000      	ldi rTmp, 0
+0008de bf02      	out TCNT0, rTmp
+                 
+                 	;1/8 prescaler, CTC mode
+0008df e00a      	ldi rTmp, (1<<WGM01) | (1<<CS01)
+0008e0 bf03      	out TCCR0, rTmp
+                 
+                 
+                 	;Other initialization
+0008e1 2700      	clr rTmp
+0008e2 9300 007e 	sts mCurrentOutChannel, rTmp
+0008e4 9300 0101 	sts mAlwaysRecalculateChannelsData, rTmp
+0008e6 e00f      	ldi rTmp, 0x0f
+0008e7 9300 010d 	sts mSettingsIncrement, rTmp ;0b00001 111
+                 
+0008e9 ef0f      	ldi rTmp, 0xff
+0008ea 9300 006d 	sts mCommonBrightness, rTmp
+0008ec e0f0      	ldi r31, high(mElementBrightness)
+0008ed e7ef      	ldi r30, low(mElementBrightness)
+                 setAllElementsBrightness:
+0008ee 9301      	st Z+, rTmp
+0008ef 3bef      	cpi ZL, low(mElementBrightness + 64)
+0008f0 f7e9      	brne setAllElementsBrightness
+0008f1 30f0      	cpi ZH, high(mElementBrightness + 64)
+0008f2 f7d9      	brne setAllElementsBrightness
+                 
+                 readBrightnessRatio:
+0008f3 99e1      	sbic EECR, EEWE
+0008f4 cffe      	rjmp readBrightnessRatio
+0008f5 e00f      	ldi r16, low(eBrightnessRatio)
+0008f6 e010      	ldi r17, high(eBrightnessRatio)
+0008f7 bb0e      	out EEARL, r16
+0008f8 bb1f      	out EEARH, r17
+0008f9 9ae0      	sbi EECR, EERE
+0008fa b30d      	in rTmp, EEDR
+0008fb 9300 0102 	sts mBrightnessRatio, rTmp
+                 
+0008fd 9478      	sei
+                 ;================End initialization==================
+                 
+                 mainCycle:
+                 calculateDisplayData:
+0008fe 9030 0100 	lds r3, mRecalculateChannelsData 
+000900 2033      	tst r3
+000901 f041      	breq checkRTCTimeIncrement
+000902 940e 04ed 	call CalculateChannelsData ;We should to recalculate all display data immediately
+000904 940e 0215 	call ReadFotosensor
+000906 2433      	clr r3
+000907 9230 0100 	sts mRecalculateChannelsData, r3
+000909 c012      	rjmp getKeyboard
+                 checkRTCTimeIncrement:
+00090a 9030 006c 	lds r3, mRTCTimeIncrement ;If second not changed there is no need to recalculate segments
+00090c 2033      	tst r3
+00090d f071      	breq getKeyboard
+00090e 2433      	clr r3
+00090f 9230 006c 	sts mRTCTimeIncrement, r3
+000911 9433      	inc r3
+000912 94f8
+000913 928f
+000914 2c83
+000915 940e 06f1
+000917 908f      	call1 IncreaseSeconds, r3
+000918 940e 04ed 	call CalculateChannelsData
+00091a 940e 0215 	call ReadFotosensor
+                 
+                 getKeyboard:
+00091c 940e 0112 	call ReadKeyboard
+00091e 940e 01cf 	call DelayButton ;Check for button delay after its pressing
+000920 2433      	clr r3
+000921 fe00      	sbrs rRes, 0
+000922 940e 0156 	call ExecuteInputEvent
+                 
+                 endMainCycle:
+000924 940c 08fe 	jmp mainCycle
+                 
+                 ;--------End main cycle---------------------------
+                 
+                 .include "eeprom.asm"
+                 
+000000 1f
+000001 1c
+000002 1f
+000003 1e
+000004 1f
+000005 1e
+000006 1f
+000007 1f
+000008 1e
+000009 1f
+00000a 1e
+00000b 1f        	eDaysInMonths: .db 31,28,31,30,31,30,31,31,30,31,30,31
+00000c 02
+00000d 07
+00000e 00        	eDaysOfWeekInLeapYears: .db 2, 7, 0 ;Which days of week have 28 of February in leap years
+                 		;This numbers are valid through 2017 year after what we must to update them
+                 		;List of numbers must be finished by zero
+00000f 0a        	eBrightnessRatio: .db 10 ;Factor to current common brightness value. Uses to
+                 		;tune brightness value depending on room's light, Changes from 1 to 20 
+
+
+RESOURCE USE INFORMATION
+------------------------
+
+Notice:
+The register and instruction counts are symbol table hit counts,
+and hence implicitly used resources are not counted, eg, the
+'lpm' instruction without operands implicitly uses r0 and z,
+none of which are counted.
+
+x,y,z are separate entities in the symbol table and are
+counted separately from r26..r31 here.
+
+.dseg memory usage only counts static data declared with .byte
+
+ATmega32A register use summary:
+r0 :  36 r1 :  19 r2 :  95 r3 :  11 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
+r8 : 210 r9 : 134 r10: 114 r11:  93 r12:  80 r13:   4 r14:   3 r15:   2 
+r16:  63 r17:   2 r18:   0 r19:   0 r20: 210 r21: 151 r22: 107 r23:  84 
+r24:  15 r25:  22 r26:   0 r27:   0 r28:  62 r29:  62 r30:  82 r31:  79 
+x  :   0 y  :  15 z  :  17 
+Registers used: 26 out of 35 (74.3%)
+
+ATmega32A instruction use summary:
+.lds  :   0 .sts  :   0 adc   :   6 add   :   9 adiw  :   1 and   :   3 
+andi  :  10 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+brcc  :   0 brcs  :   1 break :   0 breq  :  92 brge  :   0 brhc  :   0 
+brhs  :   0 brid  :   0 brie  :   0 brlo  :   9 brlt  :   1 brmi  :   2 
+brne  :  43 brpl  :   0 brsh  :   6 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :  51 cbi   :   3 cbr   :   2 
+clc   :   1 clh   :   0 cli   :  83 cln   :   0 clr   :  42 cls   :   0 
+clt   :   0 clv   :   0 clz   :   0 com   :   2 cp    :  13 cpc   :   0 
+cpi   :  32 cpse  :   0 dec   :  43 eor   :   6 fmul  :   0 fmuls :   0 
+fmulsu:   0 icall :   0 ijmp  :   1 in    :  14 inc   :  52 jmp   :  14 
+ld    :   7 ldd   :   0 ldi   :  98 lds   :  68 lpm   :   3 lsl   :  11 
+lsr   :   8 mov   :  72 movw  :   1 mul   :   1 muls  :   0 mulsu :   0 
+neg   :   1 nop   :   2 or    :   4 ori   :   7 out   :  34 pop   : 399 
+push  : 490 rcall :   0 ret   :  29 reti  :  20 rjmp  :  56 rol   :   6 
+ror   :   4 sbc   :   0 sbci  :   0 sbi   :   9 sbic  :   5 sbis  :   0 
+sbiw  :   0 sbr   :   3 sbrc  :  11 sbrs  :   3 sec   :   3 seh   :   0 
+sei   :  63 sen   :   0 ser   :   1 ses   :   0 set   :   0 sev   :   0 
+sez   :   0 sleep :   0 spm   :   0 st    :  23 std   :   0 sts   :  65 
+sub   :   3 subi  :   0 swap  :   0 tst   :  63 wdr   :   0 
+Instructions used: 60 out of 113 (53.1%)
+
+ATmega32A memory use summary [bytes]:
+Segment   Begin    End      Code   Data   Used    Size   Use%
+---------------------------------------------------------------
+[.cseg] 0x000000 0x00124c   4624     28   4652   32768  14.2%
+[.dseg] 0x000060 0x00010f      0    175    175    2048   8.5%
+[.eseg] 0x000000 0x000010      0     16     16    1024   1.6%
+
+Assembly complete, 0 errors, 0 warnings
